@@ -1,0 +1,27 @@
+name: presubmit
+on:
+  pull_request:
+    paths:
+      - .github/actions/presubmit/action.yml
+      - .github/workflows/presubmit.yml
+      - pipelines/bitnami/compat.yaml
+      - keycloak-melange.yaml
+      - keycloak-metrics-spi-melange.yaml
+      - apko.yaml
+jobs:
+  build:
+    name: Verify image (single arch)
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set tag name
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_SHA#refs/*/}
+      - uses: ./.github/actions/presubmit
+        with:
+          tag: "${{ steps.vars.outputs.tag }}"
+          archs: x86_64,aarch64

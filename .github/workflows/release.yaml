@@ -1,0 +1,31 @@
+name: build
+concurrency: build
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - .github/actions/release/action.yml
+      - .github/workflows/release.yml
+      - pipelines/bitnami/compat.yaml
+      - keycloak-melange.yaml
+      - keycloak-metrics-spi-melange.yaml
+      - apko.yaml
+jobs:
+  build:
+    name: Release image
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      # - name: Set tag name
+      #   id: vars
+      #   run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      - uses: ./.github/actions/release
+        with:
+          archs: x86_64 # ,aarch64 disabled due to failing.
