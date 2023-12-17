@@ -1,6 +1,6 @@
 package:
   name: keycloak-metrics-spi-bitnami
-  version: 4.0.0
+  version: master
   epoch: 0
   description: "Adds a Metrics Endpoint to Keycloak"
   copyright:
@@ -24,19 +24,38 @@ environment:
     LANG: en_US.UTF-8
     JAVA_HOME: /usr/lib/jvm/java-17-openjdk
 
+vars:
+  folder: keycloak-metrics-spi
+  # 4.0.0 comes with Keycloak 21 which does not work with Keycloak 23
+  # This reason, we use master branch, then we patch the plugin with Keycloak 23
+  # PR for fix: https://github.com/aerogear/keycloak-metrics-spi/pull/183
+  # TODO: If PR merged and tagged, we can revert back to using tag
+  # Last commit in the master branch
+  commit: bc049a93d4a2255460206c1cfc13b119061707a4
+
 pipeline:
   - uses: git-checkout
     with:
       repository: https://github.com/aerogear/keycloak-metrics-spi
-      tag: ${{package.version}}
-      expected-commit: 4b99a5bcf1e40220281bd05ccdab445a19f334b8
+      branch: ${{package.version}}
+      destination: ${{vars.folder}}
 
-  - runs: |
-      # Build the tool
-      mvn clean package versions:set -DnewVersion=${{package.version}} -DskipTests
+  - working-directory: ${{vars.folder}}
+    pipeline:
+      # NOTE: See the vars.commit comment
+      - runs: git checkout ${{vars.commit}}
 
-      mkdir -p ${{targets.destdir}}/opt/bitnami/keycloak/providers
+      - uses: patch
+        with:
+          # update Keycloak version to 23.0.3
+          patches: /home/build/upgrade-to-23.patch
 
-      cp -rf target/keycloak-metrics-spi-*.jar ${{targets.destdir}}/opt/bitnami/keycloak/providers
+      - runs: |
+          # Build the tool
+          mvn clean package versions:set -DnewVersion=${{package.version}} -DskipTests
 
-      chmod g+rwX ${{targets.destdir}}/opt/bitnami
+          mkdir -p ${{targets.destdir}}/opt/bitnami/keycloak/providers
+
+          cp -rf target/keycloak-metrics-spi-*.jar ${{targets.destdir}}/opt/bitnami/keycloak/providers
+
+          chmod g+rwX ${{targets.destdir}}/opt/bitnami

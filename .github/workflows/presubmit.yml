@@ -10,7 +10,7 @@ on:
       - apko.yaml
 jobs:
   build:
-    name: Verify image (single arch)
+    name: Verify image
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -18,10 +18,6 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v3
-      - name: Set tag name
-        id: vars
-        run: echo ::set-output name=tag::${GITHUB_SHA#refs/*/}
       - uses: ./.github/actions/presubmit
         with:
-          tag: "${{ steps.vars.outputs.tag }}"
-          archs: x86_64,aarch64
+          archs: amd64 #,arm64

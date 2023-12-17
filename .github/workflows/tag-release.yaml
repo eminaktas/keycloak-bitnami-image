@@ -12,9 +12,6 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v3
-      # - name: Set tag name
-      #   id: vars
-      #   run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
       - uses: ./.github/actions/tag-release
         with:
-          archs: x86_64 # ,aarch64 disabled due to failing.
+          aarchs: amd64 #,arm64
