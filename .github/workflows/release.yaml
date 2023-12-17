@@ -2,7 +2,8 @@ name: build
 concurrency: build
 on:
   schedule:
-    - cron: '0 0 * * *'
+    # Weekly
+    - cron: '0 0 * * 0'
   push:
     branches:
       - main
@@ -23,9 +24,6 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v3
-      # - name: Set tag name
-      #   id: vars
-      #   run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
       - uses: ./.github/actions/release
         with:
-          archs: x86_64 # ,aarch64 disabled due to failing.
+          archs: amd64 #,arm64

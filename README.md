@@ -1,6 +1,6 @@
-[![build](https://github.com/eminaktas/keycloak-bitnami-image/actions/workflows/release.yaml/badge.svg)](https://github.com/eminaktas/keycloak-bitnami-image/actions/workflows/release.yaml)
-
 # Keycloak Bitnami Image
+
+[![build](https://github.com/eminaktas/keycloak-bitnami-image/actions/workflows/release.yaml/badge.svg)](https://github.com/eminaktas/keycloak-bitnami-image/actions/workflows/release.yaml)
 
 This project aims to build a secure and up-to-date container image for Bitnami's Keycloak Chart, leveraging the Apko and Melange projects to create an image free from Common Vulnerabilities and Exposures (CVEs).
 

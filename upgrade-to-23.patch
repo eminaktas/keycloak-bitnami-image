@@ -1,0 +1,21 @@
+diff --git a/gradle.properties b/gradle.properties
+index 39db198..ae45da8 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -1,2 +1,2 @@
+-keycloakVersion=22.0.0
++keycloakVersion=23.0.3
+ prometheusVersion=0.16.0
+diff --git a/pom.xml b/pom.xml
+index b84a44b..2de42dc 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -11,7 +11,7 @@
+
+     <properties>
+         <java.version>17</java.version>
+-        <keycloak.version>22.0.0</keycloak.version>
++        <keycloak.version>23.0.3</keycloak.version>
+         <prometheus.version>0.16.0</prometheus.version>
+         <version.compiler.maven.plugin>3.5.1</version.compiler.maven.plugin>
+         <maven.compiler.source>17</maven.compiler.source>
