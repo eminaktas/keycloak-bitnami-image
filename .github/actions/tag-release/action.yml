@@ -1,0 +1,61 @@
+name: tag-release
+description: "tag-release"
+inputs:
+  archs:
+    description: "archs"
+    required: true
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v3
+
+    - name: Populate workspace with source only
+      shell: bash
+      run: |
+        shopt -s dotglob && tmp="$(mktemp -d)" && \
+          mv pipelines *.yaml ${tmp}/ && \
+          mv .github ${tmp}/ && \
+          rm -rf ./* && mv ${tmp}/* . && \
+          echo ".github/" >> .melangeignore && tree -a . && \
+          sudo rm -rf /work && sudo mkdir /work
+
+    # - name: Setup QEMU
+    #   uses: docker/setup-qemu-action@v3
+    #   with:
+    #     platforms: ${{ inputs.archs }}
+
+    # TODO: https://github.com/chainguard-dev/actions/pull/367
+    # - uses: chainguard-dev/actions/melange-build@main
+    - uses: eminaktas/actions/melange-build@feat/add-pipeline-dir-option-melange-build
+      with:
+        archs: ${{ inputs.archs }}
+        multi-config: keycloak-melange.yaml,keycloak-metrics-spi-melange.yaml
+        signing-key-path: /work/melange.rsa
+        repository-path: /work/packages
+        empty-workspace: false
+        sign-with-temporary-key: true
+        pipeline-dir: pipelines
+
+    - name: Create temp copy of /work directory (used in next step)
+      shell: bash
+      run: |
+        rm -rf .apko-automount && cp -r /work .apko-automount
+
+    - uses: chainguard-images/actions/apko-publish@main
+      with:
+        archs: ${{ inputs.archs }}
+        config: apko.yaml
+        tag: ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+        keyring-append: /work/melange.rsa.pub
+        automount-src: .apko-automount/.
+        automount-dest: /work
+
+    - name: Smoke test
+      shell: bash
+      run: |
+        ref="ghcr.io/${{ github.repository }}:${{ github.ref_name }}"
+        docker pull "${ref}"
+        docker run -d --rm -p 8080:8080 -e KEYCLOAK_DATABASE_VENDOR=dev-file -e KEYCLOAK_ENABLE_HEALTH_ENDPOINTS=true --name smoketest "${ref}"
+        trap "docker rm -f smoketest" EXIT
+        sleep 30 # Give server a few seconds to come up
+        curl -v --max-time 10 http://localhost:8080/health
