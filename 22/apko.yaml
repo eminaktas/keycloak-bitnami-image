@@ -1,0 +1,54 @@
+contents:
+  repositories:
+    - https://packages.wolfi.dev/os
+    - /work/packages
+  keyring:
+    - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+  packages:
+    - busybox
+    - keycloak-bitnami
+    - keycloak-bitnami-compat
+    - keycloak-metrics-spi-bitnami
+
+accounts:
+  groups:
+    - groupname: nonroot
+      gid: 65532
+  users:
+    - username: nonroot
+      uid: 65532
+      gid: 65532
+  run-as: "65532"
+
+paths:
+  - path: /opt/bitnami
+    type: directory
+    permissions: 0o777
+    uid: 65532
+    gid: 65532
+    recursive: true
+
+  - path: /bitnami/keycloak
+    type: directory
+    permissions: 0o777
+    uid: 65532
+    gid: 65532
+    recursive: true
+
+  - path: /docker-entrypoint-initdb.d
+    type: directory
+    permissions: 0o777
+    uid: 65532
+    gid: 65532
+    recursive: true
+
+environment:
+    LANG: en_US.UTF-8
+    JAVA_HOME: /usr/lib/jvm/java-17-openjdk
+    APP_VERSION: 22.0.8
+    BITNAMI_APP_NAME: keycloak
+    PATH: /opt/bitnami/common/bin:/usr/lib/jvm/java-17-openjdk:/opt/bitnami/keycloak/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+entrypoint:
+  command: /opt/bitnami/scripts/keycloak/entrypoint.sh
+cmd: /opt/bitnami/scripts/keycloak/run.sh
