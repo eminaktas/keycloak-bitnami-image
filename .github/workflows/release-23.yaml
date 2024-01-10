@@ -1,0 +1,24 @@
+name: tag-build
+on:
+  schedule:
+    # Weekly
+    - cron: '0 0 * * 0'
+  push:
+    branches:
+      - release/23
+jobs:
+  build:
+    name: Release image with tag
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release/23
+      - uses: ./.github/actions/tag-release
+        with:
+          archs: amd64 #,arm64
+          tag: latest-23

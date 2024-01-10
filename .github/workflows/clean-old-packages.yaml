@@ -1,0 +1,20 @@
+name: package-cleaner
+on:
+  workflow_dispatch:
+  schedule:
+    # Weekly
+    - cron: '0 0 * * 0'
+jobs:
+  build:
+    name: Release image
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+    - uses: actions/delete-package-versions@v4
+      with: 
+        package-name: 'keycloak-bitnami-image'
+        package-type: 'container'
+        min-versions-to-keep: 3

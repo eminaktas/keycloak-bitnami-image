@@ -4,6 +4,9 @@ inputs:
   archs:
     description: "archs"
     required: true
+  tag:
+    description: "tag"
+    required: true
 runs:
   using: composite
   steps:
@@ -45,7 +48,7 @@ runs:
       with:
         archs: ${{ inputs.archs }}
         config: apko.yaml
-        tag: ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+        tag: ghcr.io/${{ github.repository }}:${{ inputs.tag }}
         keyring-append: /work/melange.rsa.pub
         automount-src: .apko-automount/.
         automount-dest: /work
@@ -53,7 +56,7 @@ runs:
     - name: Smoke test
       shell: bash
       run: |
-        ref="ghcr.io/${{ github.repository }}:${{ github.ref_name }}"
+        ref="ghcr.io/${{ github.repository }}:${{ inputs.tag }}"
         docker pull "${ref}"
         docker run -d --rm -p 8080:8080 -e KEYCLOAK_DATABASE_VENDOR=dev-file -e KEYCLOAK_ENABLE_HEALTH_ENDPOINTS=true --name smoketest "${ref}"
         trap "docker rm -f smoketest" EXIT
