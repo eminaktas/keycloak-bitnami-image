@@ -47,7 +47,7 @@ pipeline:
 
       - uses: patch
         with:
-          # update Keycloak version to 23.0.3
+          # update Keycloak version to 23.0.4
           patches: /home/build/upgrade-to-23.patch
 
       - runs: |

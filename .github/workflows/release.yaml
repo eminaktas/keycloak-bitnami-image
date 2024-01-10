@@ -11,9 +11,9 @@ on:
       - .github/actions/release/action.yml
       - .github/workflows/release.yml
       - pipelines/bitnami/compat.yaml
-      - keycloak-melange.yaml
-      - keycloak-metrics-spi-melange.yaml
-      - apko.yaml
+      - 23/keycloak-melange.yaml
+      - 23/keycloak-metrics-spi-melange.yaml
+      - 23/apko.yaml
 jobs:
   build:
     name: Release image

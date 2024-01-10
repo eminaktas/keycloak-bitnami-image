@@ -1,0 +1,74 @@
+package:
+  name: keycloak-bitnami
+  version: 22.0.8
+  epoch: 0
+  description: "Open Source Identity and Access Management For Modern Applications and Services"
+  copyright:
+    - paths:
+        - "*"
+      attestation: ""
+      license: Apache-2.0
+  dependencies:
+    runtime:
+      - bash # Keycloak helper scripts require bash, aren't compatible with busybox.
+      - openjdk-17-default-jvm
+      - posix-libc-utils # getent is required for the bitnami's helper scripts
+      - wait-for-port # Keycloak uses this in their script
+
+environment:
+  contents:
+    repositories:
+      - https://packages.wolfi.dev/os
+    keyring:
+      - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+    packages:
+      - bash
+      - busybox
+      - ca-certificates-bundle
+      - nodejs-18
+      - openjdk-17-default-jvm
+      - wolfi-base
+      - wolfi-baselayout
+  environment:
+    LANG: en_US.UTF-8
+    JAVA_HOME: /usr/lib/jvm/java-17-openjdk
+
+pipeline:
+  - uses: git-checkout
+    with:
+      repository: https://github.com/keycloak/keycloak
+      tag: ${{package.version}}
+      expected-commit: 219124f0bdcad387a931ce510cb30d28b08ddd4e
+
+  - runs: |
+      # Build keycloak
+      ./mvnw clean install --errors -DskipTests -DskipTestsuite -DskipExamples -Pdistribution -Dnode.version=$(node --version) -q
+
+      mkdir -p ${{targets.destdir}}/opt/bitnami
+      unzip -d ${{targets.destdir}}/opt/bitnami quarkus/dist/target/keycloak-*.zip
+      mv ${{targets.destdir}}/opt/bitnami/keycloak-* ${{targets.destdir}}/opt/bitnami/keycloak
+
+      chmod g+rwX ${{targets.destdir}}/opt/bitnami
+
+subpackages:
+  - name: keycloak-bitnami-compat
+    description: "compat package with bitnami/keycloak image"
+    pipeline:
+      - uses: bitnami/compat
+        with:
+          image: keycloak
+          version-path: 23/debian-11
+      - runs: |
+          # Change the flag for hostname command in the script otherwise, it fails by saying unknown flag for --fqdn
+          sed -i 's/hostname --fqdn/hostname -f/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak-env.sh
+
+          # Fix the JAVA_HOME Path in the script
+          sed -i 's/JAVA_HOME="\/opt\/bitnami\/java"/JAVA_HOME="\/usr\/lib\/jvm\/java-17-openjdk"/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak-env.sh
+
+          # Change the path for java security folder in the script
+          sed -i 's/\/opt\/bitnami\/java\/lib\/security/\/usr\/lib\/jvm\/java-17-openjdk\/conf\/security/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/java/postunpack.sh
+
+          # Disable some commands used in Bitnami scripts. These commands more likely fail in this since this image take non root approach
+          sed -i 's/chown -R "$KEYCLOAK_DAEMON_USER" "$dir"/# chown -R "$KEYCLOAK_DAEMON_USER" "$dir"/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak/postunpack.sh
+          sed -i 's/ensure_user_exists/# ensure_user_exists/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak/postunpack.sh
+          sed -i 's/am_i_root/# am_i_root/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak/setup.sh
