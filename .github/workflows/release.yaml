@@ -1,4 +1,4 @@
-name: build-latest
+name: build
 concurrency: build
 on:
   schedule:
@@ -23,6 +23,11 @@ jobs:
       packages: write
       contents: read
     steps:
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'keycloak-bitnami-image'
+          package-type: 'container'
+          min-versions-to-keep: 10
       - uses: actions/checkout@v4
       - uses: ./.github/actions/release
         with:
