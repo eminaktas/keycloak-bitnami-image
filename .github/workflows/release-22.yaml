@@ -1,4 +1,4 @@
-name: tag-build
+name: build-22
 on:
   schedule:
     # Weekly
