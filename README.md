@@ -4,6 +4,11 @@
 
 This project aims to build a secure and up-to-date container image for Bitnami's Keycloak Chart, leveraging the Apko and Melange projects to create an image free from Common Vulnerabilities and Exposures (CVEs).
 
+| Image Tag  | Keycloak Version  | Description                               |
+|------------|-------------------|-------------------------------------------|
+| **latest** | **23.0.4**        | Latest stable release of Keycloak         |
+| latest-22  | 22.0.8            | Latest release within Keycloak version 22 |
+
 ## Table of Contents
 
 - [Introduction](#introduction)
