@@ -20,6 +20,7 @@ environment:
       - maven
       - openjdk-17
       - openjdk-17-default-jvm
+      - git
   environment:
     LANG: en_US.UTF-8
     JAVA_HOME: /usr/lib/jvm/java-17-openjdk
@@ -34,16 +35,18 @@ vars:
   commit: bc049a93d4a2255460206c1cfc13b119061707a4
 
 pipeline:
-  - uses: git-checkout
-    with:
-      repository: https://github.com/aerogear/keycloak-metrics-spi
-      branch: ${{package.version}}
-      destination: ${{vars.folder}}
+  # - uses: git-checkout
+  #   with:
+  #     repository: https://github.com/aerogear/keycloak-metrics-spi
+  #     branch: ${{package.version}}
+  #     destination: ${{vars.folder}}
 
   - working-directory: ${{vars.folder}}
     pipeline:
       # NOTE: See the vars.commit comment
-      - runs: git checkout ${{vars.commit}}
+      - runs: |
+          git clone https://github.com/aerogear/keycloak-metrics-spi .
+          git checkout -q ${{vars.commit}}
 
       - uses: patch
         with:
