@@ -1,6 +1,6 @@
 package:
   name: keycloak-metrics-spi-bitnami
-  version: master
+  version: 5.0.0
   epoch: 0
   description: "Adds a Metrics Endpoint to Keycloak"
   copyright:
@@ -20,45 +20,23 @@ environment:
       - maven
       - openjdk-17
       - openjdk-17-default-jvm
-      - git
   environment:
     LANG: en_US.UTF-8
     JAVA_HOME: /usr/lib/jvm/java-17-openjdk
 
-vars:
-  folder: keycloak-metrics-spi
-  # 4.0.0 comes with Keycloak 21 which does not work with Keycloak 23
-  # This reason, we use master branch, then we patch the plugin with Keycloak 23
-  # PR for fix: https://github.com/aerogear/keycloak-metrics-spi/pull/183
-  # TODO: If PR merged and tagged, we can revert back to using tag
-  # Last commit in the master branch
-  commit: bc049a93d4a2255460206c1cfc13b119061707a4
-
 pipeline:
-  # - uses: git-checkout
-  #   with:
-  #     repository: https://github.com/aerogear/keycloak-metrics-spi
-  #     branch: ${{package.version}}
-  #     destination: ${{vars.folder}}
+  - uses: git-checkout
+    with:
+      repository: https://github.com/aerogear/keycloak-metrics-spi
+      tag: ${{package.version}}
+      expected-commit: 9dc0a9913ea74a4fd8dd4b531f67d32d64b865ef
 
-  - working-directory: ${{vars.folder}}
-    pipeline:
-      # NOTE: See the vars.commit comment
-      - runs: |
-          git clone https://github.com/aerogear/keycloak-metrics-spi .
-          git checkout -q ${{vars.commit}}
+  - runs: |
+      # Build the tool
+      mvn clean package versions:set -DnewVersion=${{package.version}} -DskipTests
 
-      - uses: patch
-        with:
-          # update Keycloak version to 23.0.4
-          patches: /home/build/upgrade-to-23.patch
+      mkdir -p ${{targets.destdir}}/opt/bitnami/keycloak/providers
 
-      - runs: |
-          # Build the tool
-          mvn clean package versions:set -DnewVersion=${{package.version}} -DskipTests
+      cp -rf target/keycloak-metrics-spi-*.jar ${{targets.destdir}}/opt/bitnami/keycloak/providers
 
-          mkdir -p ${{targets.destdir}}/opt/bitnami/keycloak/providers
-
-          cp -rf target/keycloak-metrics-spi-*.jar ${{targets.destdir}}/opt/bitnami/keycloak/providers
-
-          chmod g+rwX ${{targets.destdir}}/opt/bitnami
+      chmod g+rwX ${{targets.destdir}}/opt/bitnami
