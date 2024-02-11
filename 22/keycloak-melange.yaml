@@ -25,6 +25,7 @@ environment:
       - bash
       - busybox
       - ca-certificates-bundle
+      - curl
       - nodejs-18
       - openjdk-17
       - openjdk-17-default-jvm
@@ -42,6 +43,9 @@ pipeline:
       expected-commit: 219124f0bdcad387a931ce510cb30d28b08ddd4e
 
   - runs: |
+      # Build and install child module (keycloak-js-adapter-jar)
+      ./mvnw clean install --errors -DskipTests -DskipTestsuite -DskipExamples -Dnode.version=$(node --version) -f adapters/oidc/js/pom.xml -q
+
       # Build keycloak
       ./mvnw clean install --errors -DskipTests -DskipTestsuite -DskipExamples -Pdistribution -Dnode.version=$(node --version) -q
 
