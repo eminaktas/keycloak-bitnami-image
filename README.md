@@ -6,7 +6,7 @@ This project aims to build a secure and up-to-date container image for Bitnami's
 
 | Image Tag  | Keycloak Version  | Description                               |
 |------------|-------------------|-------------------------------------------|
-| **latest** | **23.0.4**        | Latest stable release of Keycloak         |
+| **latest** | **23.0.6**        | Latest stable release of Keycloak         |
 | latest-22  | 22.0.8            | Latest release within Keycloak version 22 |
 
 ## Table of Contents
@@ -61,23 +61,23 @@ docker run --rm -v "$(pwd)":/work cgr.dev/chainguard/melange keygen
 - Build the package for Keycloak metrics SPI:
 
 ```bash
-docker run --privileged --rm -v "$(pwd)":/work \
-  cgr.dev/chainguard/melange build keycloak-metrics-spi-melange.yaml \
+KEYCLOAK_VERSION=23 docker run --privileged --rm -v "$(pwd)":/work \
+  cgr.dev/chainguard/melange build $KEYCLOAK_VERSION/keycloak-metrics-spi-melange.yaml \
   --signing-key melange.rsa
 ```
 
 - Build the package for Keycloak:
 
 ```bash
-docker run --privileged --rm -v "$(pwd)":/work \
-  cgr.dev/chainguard/melange build keycloak-melange.yaml \
+KEYCLOAK_VERSION=23 docker run --privileged --rm -v "$(pwd)":/work \
+  cgr.dev/chainguard/melange build $KEYCLOAK_VERSION/keycloak-melange.yaml \
   --signing-key melange.rsa --pipeline-dir pipelines
 ```
 
 - Build the container image:
 
 ```bash
-docker run --rm -v "$(pwd)":/work cgr.dev/chainguard/apko build apko.yaml \
+KEYCLOAK_VERSION=23 docker run --rm -v "$(pwd)":/work cgr.dev/chainguard/apko build $KEYCLOAK_VERSION/apko.yaml \
   keycloak-bitnami-image:latest keycloak-bitnami-image-latest.tar \
   --keyring-append melange.rsa.pub
 ```

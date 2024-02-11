@@ -26,6 +26,7 @@ environment:
       - busybox
       - ca-certificates-bundle
       - nodejs-18
+      - openjdk-17
       - openjdk-17-default-jvm
       - wolfi-base
       - wolfi-baselayout

@@ -1,6 +1,6 @@
 package:
   name: keycloak-bitnami
-  version: 23.0.4
+  version: 23.0.6
   epoch: 0
   description: "Open Source Identity and Access Management For Modern Applications and Services"
   copyright:
@@ -26,6 +26,7 @@ environment:
       - busybox
       - ca-certificates-bundle
       - nodejs-18
+      - openjdk-17
       - openjdk-17-default-jvm
       - wolfi-base
       - wolfi-baselayout
@@ -38,7 +39,7 @@ pipeline:
     with:
       repository: https://github.com/keycloak/keycloak
       tag: ${{package.version}}
-      expected-commit: 7d3ce4bd9b79aeb0cff4e099a8460334460999c7
+      expected-commit: b97f22268cec69d6f14a20610ae77267ec65b76a
 
   - runs: |
       # Build and install child module (keycloak-js-adapter-jar)
