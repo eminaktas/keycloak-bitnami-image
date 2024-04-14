@@ -16,7 +16,7 @@ runs:
       shell: bash
       run: |
         shopt -s dotglob && tmp="$(mktemp -d)" && \
-          mv pipelines 22/*.yaml ${tmp}/ && \
+          mv pipelines ${{ inputs.tag }}/*.yaml ${tmp}/ && \
           mv .github ${tmp}/ && \
           rm -rf ./* && mv ${tmp}/* . && \
           echo ".github/" >> .melangeignore && tree -a . && \
@@ -48,7 +48,7 @@ runs:
       with:
         archs: ${{ inputs.archs }}
         config: apko.yaml
-        tag: ghcr.io/${{ github.repository }}:${{ inputs.tag }}
+        tag: ghcr.io/${{ github.repository }}:latest-${{ inputs.tag }}
         keyring-append: /work/melange.rsa.pub
         automount-src: .apko-automount/.
         automount-dest: /work
@@ -56,7 +56,7 @@ runs:
     - name: Smoke test
       shell: bash
       run: |
-        ref="ghcr.io/${{ github.repository }}:${{ inputs.tag }}"
+        ref="ghcr.io/${{ github.repository }}:latest-${{ inputs.tag }}"
         docker pull "${ref}"
         docker run -d --rm -p 8080:8080 -e KEYCLOAK_DATABASE_VENDOR=dev-file -e KEYCLOAK_ENABLE_HEALTH_ENDPOINTS=true --name smoketest "${ref}"
         trap "docker rm -f smoketest" EXIT

@@ -26,4 +26,4 @@ jobs:
       - uses: ./.github/actions/tag-release
         with:
           archs: amd64 #,arm64
-          tag: latest-22
+          tag: 23

@@ -1,0 +1,42 @@
+package:
+  name: keycloak-metrics-spi-bitnami
+  version: 5.0.0
+  epoch: 0
+  description: "Adds a Metrics Endpoint to Keycloak"
+  copyright:
+    - paths:
+        - "*"
+      attestation: ""
+      license: Apache-2.0
+
+environment:
+  contents:
+    repositories:
+      - https://packages.wolfi.dev/os
+    keyring:
+      - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+    packages:
+      - busybox
+      - maven
+      - openjdk-17
+      - openjdk-17-default-jvm
+  environment:
+    LANG: en_US.UTF-8
+    JAVA_HOME: /usr/lib/jvm/java-17-openjdk
+
+pipeline:
+  - uses: git-checkout
+    with:
+      repository: https://github.com/aerogear/keycloak-metrics-spi
+      tag: ${{package.version}}
+      expected-commit: 9dc0a9913ea74a4fd8dd4b531f67d32d64b865ef
+
+  - runs: |
+      # Build the tool
+      mvn clean package versions:set -DnewVersion=${{package.version}} -DskipTests
+
+      mkdir -p ${{targets.destdir}}/opt/bitnami/keycloak/providers
+
+      cp -rf target/keycloak-metrics-spi-*.jar ${{targets.destdir}}/opt/bitnami/keycloak/providers
+
+      chmod g+rwX ${{targets.destdir}}/opt/bitnami
