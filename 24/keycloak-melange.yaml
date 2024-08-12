@@ -70,8 +70,6 @@ subpackages:
             mkdir -p ${{targets.contextdir}}/opt/bitnami/keycloak/$dir
           done
 
-          chmod g+rwX ${{targets.contextdir}}/opt/bitnami
-
           # Change the flag for hostname command in the script otherwise, it fails by saying unknown flag for --fqdn
           sed -i 's/hostname --fqdn/hostname -f/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak-env.sh
 
