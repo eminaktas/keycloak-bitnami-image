@@ -61,7 +61,7 @@ runs:
     - name: Smoke test
       shell: bash
       run: |
-        ref="ghcr.io/${{ github.repository }}:${{ inputs.tag }}-smoketest"
+        ref="ghcr.io/${{ github.repository }}:${{ inputs.tag }}-smoketest-amd64"
         docker run -d --rm -p 8080:8080 -e KEYCLOAK_DATABASE_VENDOR=dev-file -e KEYCLOAK_ENABLE_HEALTH_ENDPOINTS=true --name smoketest "${ref}"
         trap "docker rm -f smoketest" EXIT
         sleep 30 # Give server a few seconds to come up
