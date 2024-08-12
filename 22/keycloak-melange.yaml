@@ -62,8 +62,7 @@ subpackages:
       - uses: bitnami/compat
         with:
           image: keycloak
-          tag: 22.0.11
-          expected-commit: 5fd0d6495eeac2741ca5c274d367b27c1bcfa311
+          commit: 5fd0d6495eeac2741ca5c274d367b27c1bcfa311
           version-path: 22/debian-11
       - runs: |
           # Change the flag for hostname command in the script otherwise, it fails by saying unknown flag for --fqdn
