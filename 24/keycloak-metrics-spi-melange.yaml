@@ -38,5 +38,3 @@ pipeline:
       mkdir -p ${{targets.destdir}}/opt/bitnami/keycloak/providers
 
       cp -rf target/keycloak-metrics-spi-*.jar ${{targets.destdir}}/opt/bitnami/keycloak/providers
-
-      chmod g+rwX ${{targets.destdir}}/opt/bitnami
