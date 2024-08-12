@@ -10,9 +10,9 @@ on:
       - .github/actions/tag-release/action.yml
       - .github/workflows/tag-release.yml
       - pipelines/bitnami/compat.yaml
-      - 22/keycloak-melange.yaml
-      - 22/keycloak-metrics-spi-melange.yaml
-      - 22/apko.yaml
+      - 23/keycloak-melange.yaml
+      - 23/keycloak-metrics-spi-melange.yaml
+      - 23/apko.yaml
 jobs:
   build:
     name: Release image with tag
