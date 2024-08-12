@@ -35,29 +35,22 @@ environment:
     JAVA_HOME: /usr/lib/jvm/java-17-openjdk
 
 pipeline:
-  # - uses: git-checkout
-  #   with:
-  #     repository: https://github.com/keycloak/keycloak
-  #     tag: ${{package.version}}
-  #     expected-commit: 5a6e01a5b1b6074081628658186812978fcdfadc
-
-  # - runs: |
-  #     # Build and install child module (keycloak-js-adapter-jar)
-  #     ./mvnw clean install --errors -DskipTests -DskipTestsuite -DskipExamples -Dnode.version=$(node --version) -f adapters/oidc/js/pom.xml -q
-
-  #     # Build keycloak-server. Depends on `keycloak-js-adapter-jar`.
-  #     ./mvnw clean install --errors -DskipTests -DskipTestsuite -DskipExamples -Dnode.version=$(node --version) -Pdistribution -q
-
-  #     mkdir -p ${{targets.destdir}}/opt/bitnami
-  #     unzip -d ${{targets.destdir}}/opt/bitnami quarkus/dist/target/keycloak-*.zip
-  #     mv ${{targets.destdir}}/opt/bitnami/keycloak-* ${{targets.destdir}}/opt/bitnami/keycloak
-
-  #     chmod g+rwX ${{targets.destdir}}/opt/bitnami
+  - uses: git-checkout
+    with:
+      repository: https://github.com/keycloak/keycloak
+      tag: ${{package.version}}
+      expected-commit: 5a6e01a5b1b6074081628658186812978fcdfadc
 
   - runs: |
+      # Build and install child module (keycloak-js-adapter-jar)
+      ./mvnw clean install --errors -DskipTests -DskipTestsuite -DskipExamples -Dnode.version=$(node --version) -f adapters/oidc/js/pom.xml -q
+
+      # Build keycloak-server. Depends on `keycloak-js-adapter-jar`.
+      ./mvnw clean install --errors -DskipTests -DskipTestsuite -DskipExamples -Dnode.version=$(node --version) -Pdistribution -q
+
       mkdir -p ${{targets.destdir}}/opt/bitnami
-      mkdir -p ${{targets.destdir}}/opt/bitnami/keycloak
-      chmod g+rwX ${{targets.destdir}}/opt/bitnami
+      unzip -d ${{targets.destdir}}/opt/bitnami quarkus/dist/target/keycloak-*.zip
+      mv ${{targets.destdir}}/opt/bitnami/keycloak-* ${{targets.destdir}}/opt/bitnami/keycloak
 
 subpackages:
   - name: keycloak-bitnami-compat
@@ -69,6 +62,16 @@ subpackages:
           commit: ae5c22d9623baf3288581d9501d0a0c3b2577576
           version-path: 24/debian-12
       - runs: |
+          mkdir -p ${{targets.contextdir}}/bitnami/keycloak
+          mkdir -p ${{targets.contextdir}}/opt/bitnami/keycloak
+          mkdir -p ${{targets.contextdir}}/docker-entrypoint-initdb.d
+
+          for dir in bin conf conf.default lib providers themes; do
+            mkdir -p ${{targets.contextdir}}/opt/bitnami/keycloak/$dir
+          done
+
+          chmod g+rwX ${{targets.contextdir}}/opt/bitnami
+
           # Change the flag for hostname command in the script otherwise, it fails by saying unknown flag for --fqdn
           sed -i 's/hostname --fqdn/hostname -f/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak-env.sh
 
