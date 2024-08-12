@@ -61,7 +61,9 @@ subpackages:
       - uses: bitnami/compat
         with:
           image: keycloak
-          version-path: 24/debian-12
+          tag: 23.0.7
+          expected-commit: f2121c7f305702f7ef514ba251fa9cb618e034cc
+          version-path: 23/debian-12
       - runs: |
           # Change the flag for hostname command in the script otherwise, it fails by saying unknown flag for --fqdn
           sed -i 's/hostname --fqdn/hostname -f/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak-env.sh

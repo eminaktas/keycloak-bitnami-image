@@ -1,6 +1,6 @@
 package:
   name: keycloak-bitnami
-  version: 22.0.10
+  version: 22.0.11
   epoch: 0
   description: "Open Source Identity and Access Management For Modern Applications and Services"
   copyright:
@@ -40,7 +40,7 @@ pipeline:
     with:
       repository: https://github.com/keycloak/keycloak
       tag: ${{package.version}}
-      expected-commit: bf8c3c32e53449a632381605f1162fafe9abe8eb
+      expected-commit: 0463815bc93acbe22cf0b347af7cbd11e5a56d65
 
   - runs: |
       # Build and install child module (keycloak-js-adapter-jar)
@@ -62,7 +62,9 @@ subpackages:
       - uses: bitnami/compat
         with:
           image: keycloak
-          version-path: 24/debian-12
+          tag: 22.0.11
+          expected-commit: 5fd0d6495eeac2741ca5c274d367b27c1bcfa311
+          version-path: 22/debian-11
       - runs: |
           # Change the flag for hostname command in the script otherwise, it fails by saying unknown flag for --fqdn
           sed -i 's/hostname --fqdn/hostname -f/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak-env.sh

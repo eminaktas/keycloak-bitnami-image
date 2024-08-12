@@ -11,6 +11,16 @@ inputs:
       The bitnami image.
     required: true
 
+  tag:
+    description: |
+      The bitnami/containers tag for the specific version of the image.
+    required: true
+
+  expected-commit:
+    description: |
+      The commit for the tag.
+    required: true
+
   version-path:
     description: |
       The path to the root of the Dockerfile, relative to the image name.
@@ -19,8 +29,9 @@ inputs:
 pipeline:
   - uses: git-checkout
     with:
-      repository: https://github.com/bitnami/containers
-      branch: main
+      repository: https://github.com/eminaktas/containers
+      tag: ${{inputs.tag}}
+      expected-commit: ${{inputs.expected-commit}}
       destination: bitnami
   - runs: |
       mkdir -p ${{targets.contextdir}}
