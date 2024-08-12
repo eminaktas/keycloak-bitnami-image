@@ -53,8 +53,6 @@ pipeline:
       unzip -d ${{targets.destdir}}/opt/bitnami quarkus/dist/target/keycloak-*.zip
       mv ${{targets.destdir}}/opt/bitnami/keycloak-* ${{targets.destdir}}/opt/bitnami/keycloak
 
-      chmod g+rwX ${{targets.destdir}}/opt/bitnami
-
 subpackages:
   - name: keycloak-bitnami-compat
     description: "compat package with bitnami/keycloak image"
@@ -65,6 +63,16 @@ subpackages:
           commit: 5fd0d6495eeac2741ca5c274d367b27c1bcfa311
           version-path: 22/debian-11
       - runs: |
+          mkdir -p ${{targets.contextdir}}/bitnami/keycloak
+          mkdir -p ${{targets.contextdir}}/opt/bitnami/keycloak
+          mkdir -p ${{targets.contextdir}}/docker-entrypoint-initdb.d
+
+          for dir in bin conf conf.default lib providers themes; do
+            mkdir -p ${{targets.contextdir}}/opt/bitnami/keycloak/$dir
+          done
+
+          chmod g+rwX ${{targets.contextdir}}/opt/bitnami
+
           # Change the flag for hostname command in the script otherwise, it fails by saying unknown flag for --fqdn
           sed -i 's/hostname --fqdn/hostname -f/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak-env.sh
 
