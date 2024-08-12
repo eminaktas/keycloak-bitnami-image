@@ -44,7 +44,7 @@ runs:
     - uses: chainguard-images/actions/apko-build@main
       with:
         config: apko.yaml
-        tag: ghcr.io/${{ github.repository }}
+        tag: ghcr.io/${{ github.repository }}:latest-smoketest
         keyring-append: /work/melange.rsa.pub
         archs: ${{ inputs.archs }}
         automount-src: .apko-automount/.
@@ -58,7 +58,7 @@ runs:
     - name: Smoke test
       shell: bash
       run: |
-        ref="ghcr.io/${{ github.repository }}"
+        ref="ghcr.io/${{ github.repository }}:latest-smoketest"
         docker run -d --rm -p 8080:8080 -e KEYCLOAK_DATABASE_VENDOR=dev-file -e KEYCLOAK_ENABLE_HEALTH_ENDPOINTS=true --name smoketest "${ref}"
         trap "docker rm -f smoketest" EXIT
         sleep 30 # Give server a few seconds to come up
