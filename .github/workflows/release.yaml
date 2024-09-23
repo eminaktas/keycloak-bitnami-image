@@ -11,9 +11,9 @@ on:
       - .github/actions/release/action.yml
       - .github/workflows/release.yml
       - pipelines/bitnami/compat.yaml
-      - 24/keycloak-melange.yaml
-      - 24/keycloak-metrics-spi-melange.yaml
-      - 24/apko.yaml
+      - 25/keycloak-melange.yaml
+      - 25/keycloak-metrics-spi-melange.yaml
+      - 25/apko.yaml
 jobs:
   build:
     name: Release image
@@ -27,7 +27,8 @@ jobs:
       - uses: ./.github/actions/release
         with:
           archs: amd64 #,arm64
-      - uses: actions/delete-package-versions@v4
+          tag: 25
+      - uses: actions/delete-package-versions@v5
         with: 
           package-name: 'keycloak-bitnami-image'
           package-type: 'container'
