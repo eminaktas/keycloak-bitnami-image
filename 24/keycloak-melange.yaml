@@ -1,6 +1,6 @@
 package:
   name: keycloak-bitnami
-  version: 24.0.6
+  version: 24.0.8
   epoch: 0
   description: "Open Source Identity and Access Management For Modern Applications and Services"
   copyright:
@@ -39,7 +39,7 @@ pipeline:
     with:
       repository: https://github.com/keycloak/keycloak
       tag: ${{package.version}}
-      expected-commit: 5a6e01a5b1b6074081628658186812978fcdfadc
+      expected-commit: 7ed6198797dab5fb54a671016b7930e0495dfbbe
 
   - runs: |
       # Build and install child module (keycloak-js-adapter-jar)
@@ -59,7 +59,7 @@ subpackages:
       - uses: bitnami/compat
         with:
           image: keycloak
-          commit: ae5c22d9623baf3288581d9501d0a0c3b2577576
+          commit: 0d713b3e610b02d1958be97694a39ad6a22bd372
           version-path: 24/debian-12
       - runs: |
           mkdir -p ${{targets.contextdir}}/bitnami/keycloak

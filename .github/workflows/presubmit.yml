@@ -5,9 +5,9 @@ on:
       - .github/actions/presubmit/action.yml
       - .github/workflows/presubmit.yml
       - pipelines/bitnami/compat.yaml
-      - 24/keycloak-melange.yaml
-      - 24/keycloak-metrics-spi-melange.yaml
-      - 24/apko.yaml
+      - 25/keycloak-melange.yaml
+      - 25/keycloak-metrics-spi-melange.yaml
+      - 25/apko.yaml
 jobs:
   build:
     name: Verify image
@@ -21,3 +21,4 @@ jobs:
       - uses: ./.github/actions/presubmit
         with:
           archs: amd64 #,arm64
+          tag: 25
