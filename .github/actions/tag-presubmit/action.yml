@@ -22,10 +22,10 @@ runs:
           echo ".github/" >> .melangeignore && tree -a . && \
           sudo rm -rf /work && sudo mkdir /work
 
-    # - name: Setup QEMU
-    #   uses: docker/setup-qemu-action@v3
-    #   with:
-    #     platforms: ${{ inputs.archs }}
+    - name: Setup QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: ${{ inputs.archs }}
 
     # TODO: https://github.com/chainguard-dev/actions/pull/367
     # - uses: chainguard-dev/actions/melange-build@main

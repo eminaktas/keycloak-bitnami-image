@@ -20,5 +20,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/tag-presubmit
         with:
-          archs: amd64 #,arm64
+          archs: amd64,arm64
           tag: 23
