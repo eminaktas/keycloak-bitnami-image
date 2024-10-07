@@ -27,9 +27,7 @@ runs:
     #   with:
     #     platforms: ${{ inputs.archs }}
 
-    # TODO: https://github.com/chainguard-dev/actions/pull/367
-    # - uses: chainguard-dev/actions/melange-build@main
-    - uses: eminaktas/actions/melange-build@feat/add-pipeline-dir-option-melange-build
+    - uses: chainguard-dev/actions/melange-build@main
       with:
         archs: ${{ inputs.archs }}
         multi-config: keycloak-melange.yaml,keycloak-metrics-spi-melange.yaml

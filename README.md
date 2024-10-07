@@ -63,7 +63,7 @@ docker run --rm -v "$(pwd)":/work cgr.dev/chainguard/melange keygen
 - Build the package for Keycloak metrics SPI:
 
 ```bash
-KEYCLOAK_VERSION=24 docker run --privileged --rm -v "$(pwd)":/work -w /work \
+KEYCLOAK_VERSION=25 docker run --privileged --rm -v "$(pwd)":/work -w /work \
   cgr.dev/chainguard/melange build $KEYCLOAK_VERSION/keycloak-metrics-spi-melange.yaml \
   --signing-key melange.rsa
 ```
@@ -71,7 +71,7 @@ KEYCLOAK_VERSION=24 docker run --privileged --rm -v "$(pwd)":/work -w /work \
 - Build the package for Keycloak:
 
 ```bash
-KEYCLOAK_VERSION=24 docker run --privileged --rm -v "$(pwd)":/work -w /work \
+KEYCLOAK_VERSION=25 docker run --privileged --rm -v "$(pwd)":/work -w /work \
   cgr.dev/chainguard/melange build $KEYCLOAK_VERSION/keycloak-melange.yaml \
   --signing-key melange.rsa --pipeline-dir pipelines
 ```
@@ -79,7 +79,7 @@ KEYCLOAK_VERSION=24 docker run --privileged --rm -v "$(pwd)":/work -w /work \
 - Build the container image:
 
 ```bash
-KEYCLOAK_VERSION=24 docker run --rm -v "$(pwd)":/work -w /work cgr.dev/chainguard/apko build $KEYCLOAK_VERSION/apko.yaml \
+KEYCLOAK_VERSION=25 docker run --rm -v "$(pwd)":/work -w /work cgr.dev/chainguard/apko build $KEYCLOAK_VERSION/apko.yaml \
   keycloak-bitnami-image:latest keycloak-bitnami-image-latest.tar \
   --keyring-append melange.rsa.pub
 ```
