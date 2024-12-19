@@ -10,6 +10,10 @@ contents:
     - keycloak-bitnami-compat@local
     - keycloak-metrics-spi-bitnami@local
 
+archs:
+  - x86_64
+  # - aarch64
+
 accounts:
   groups:
     - groupname: nonroot
@@ -37,10 +41,10 @@ paths:
 
 environment:
     LANG: en_US.UTF-8
-    JAVA_HOME: /usr/lib/jvm/java-17-openjdk
-    APP_VERSION: 23.0.7
+    JAVA_HOME: /usr/lib/jvm/java-21-openjdk
+    APP_VERSION: 26.0.8
     BITNAMI_APP_NAME: keycloak
-    PATH: /opt/bitnami/common/bin:/usr/lib/jvm/java-17-openjdk:/opt/bitnami/keycloak/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    PATH: /opt/bitnami/common/bin:/usr/lib/jvm/java-21-openjdk:/opt/bitnami/keycloak/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 entrypoint:
   command: /opt/bitnami/scripts/keycloak/entrypoint.sh

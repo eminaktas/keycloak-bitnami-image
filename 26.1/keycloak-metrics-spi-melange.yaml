@@ -1,6 +1,6 @@
 package:
   name: keycloak-metrics-spi-bitnami
-  version: 5.0.0
+  version: 7.0.0
   epoch: 0
   description: "Adds a Metrics Endpoint to Keycloak"
   copyright:
@@ -8,6 +8,9 @@ package:
         - "*"
       attestation: ""
       license: Apache-2.0
+  target-architecture:
+    - x86_64
+    # - aarch64
 
 environment:
   contents:
@@ -18,18 +21,17 @@ environment:
     packages:
       - busybox
       - maven
-      - openjdk-17
-      - openjdk-17-default-jvm
+      - openjdk-21-default-jdk
   environment:
     LANG: en_US.UTF-8
-    JAVA_HOME: /usr/lib/jvm/java-17-openjdk
+    JAVA_HOME: /usr/lib/jvm/java-21-openjdk
 
 pipeline:
   - uses: git-checkout
     with:
       repository: https://github.com/aerogear/keycloak-metrics-spi
       tag: ${{package.version}}
-      expected-commit: 9dc0a9913ea74a4fd8dd4b531f67d32d64b865ef
+      expected-commit: 0331363064ee2864735e7ec36e30d610dfe8465d
 
   - runs: |
       # Build the tool

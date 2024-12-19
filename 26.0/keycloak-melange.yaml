@@ -1,6 +1,6 @@
 package:
   name: keycloak-bitnami
-  version: 22.0.13
+  version: 26.0.8
   epoch: 0
   description: "Open Source Identity and Access Management For Modern Applications and Services"
   copyright:
@@ -11,9 +11,21 @@ package:
   dependencies:
     runtime:
       - bash # Keycloak helper scripts require bash, aren't compatible with busybox.
-      - openjdk-17-default-jvm
+      - openjdk-21-default-jdk
       - posix-libc-utils # getent is required for the bitnami's helper scripts
       - wait-for-port # Keycloak uses this in their script
+  target-architecture:
+    - x86_64
+    # - aarch64
+
+# Create a new major-version variable that contains only the major version
+# to use in the bitnami/compat pipeline to find out the correct folder for the image.
+# e.g. 25.0.2 will create a new var major-version=25
+var-transforms:
+  - from: ${{package.version}}
+    match: ^(\d+).*
+    replace: $1
+    to: major-version
 
 environment:
   contents:
@@ -23,45 +35,62 @@ environment:
       - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
     packages:
       - bash
+      - build-base
       - busybox
       - ca-certificates-bundle
-      - curl
-      - nodejs-18
-      - openjdk-17
-      - openjdk-17-default-jvm
+      - gcc-13-default
+      - openjdk-21-default-jdk
       - wolfi-base
       - wolfi-baselayout
   environment:
     LANG: en_US.UTF-8
-    JAVA_HOME: /usr/lib/jvm/java-17-openjdk
+    JAVA_HOME: /usr/lib/jvm/java-21-openjdk
 
 pipeline:
   - uses: git-checkout
     with:
       repository: https://github.com/keycloak/keycloak
       tag: ${{package.version}}
-      expected-commit: c61bb9528a2ea1067ca9bc779a58841cd63ad68c
+      expected-commit: 9ca0ccddbf9a69d84c8d3391a86251a96ff47ca7
+
+  # - uses: maven/pombump
+  # Ref: https://github.com/wolfi-dev/os/blob/146ac3433fcaed0dc663836ad71086e080ddf901/keycloak/pom.patch
+  - uses: patch
+    with:
+      patches: pom.patch
 
   - runs: |
-      # Build and install child module (keycloak-js-adapter-jar)
-      ./mvnw clean install --errors -DskipTests -DskipTestsuite -DskipExamples -Dnode.version=$(node --version) -f adapters/oidc/js/pom.xml -q
+      gcc napi-static-assert.c -o /tmp/preload.so -fPIC -shared -ldl
 
-      # Build keycloak
-      ./mvnw clean install --errors -DskipTests -DskipTestsuite -DskipExamples -Pdistribution -Dnode.version=$(node --version) -q
+  - runs: |
+      # Build keycloak-server. Depends on `keycloak-js-adapter-jar`.
+      # Gross hack to work around broken NAPI ast-grep module that has
+      # undefined symbol: static_assert
+      export LD_PRELOAD=/tmp/preload.so
+      ./mvnw clean install --errors -DskipTests -DskipTestsuite -DskipExamples -q
+      unset LD_PRELOAD
 
       mkdir -p ${{targets.destdir}}/opt/bitnami
       unzip -d ${{targets.destdir}}/opt/bitnami quarkus/dist/target/keycloak-*.zip
       mv ${{targets.destdir}}/opt/bitnami/keycloak-* ${{targets.destdir}}/opt/bitnami/keycloak
 
+      # Create an empty data directory for keycloak. Required by the UI to store some data.
+      mkdir -p ${{targets.destdir}}/usr/share/java/keycloak/data
+
 subpackages:
+  - name: keycloak-compat
+    pipeline:
+      - runs: |
+          mkdir -p "${{targets.subpkgdir}}"/opt
+          ln -s /opt/bitnami/keycloak "${{targets.subpkgdir}}"/opt/
   - name: keycloak-bitnami-compat
     description: "compat package with bitnami/keycloak image"
     pipeline:
       - uses: bitnami/compat
         with:
           image: keycloak
-          commit: 5fd0d6495eeac2741ca5c274d367b27c1bcfa311
-          version-path: 22/debian-11
+          commit: a8bf7654f9ee9dfd20fb9073086995a36bbc26a7
+          version-path: ${{vars.major-version}}/debian-12
       - runs: |
           mkdir -p ${{targets.contextdir}}/bitnami/keycloak
           mkdir -p ${{targets.contextdir}}/opt/bitnami/keycloak
@@ -71,14 +100,16 @@ subpackages:
             mkdir -p ${{targets.contextdir}}/opt/bitnami/keycloak/$dir
           done
 
+          chmod g+rwX ${{targets.contextdir}}/opt/bitnami
+
           # Change the flag for hostname command in the script otherwise, it fails by saying unknown flag for --fqdn
           sed -i 's/hostname --fqdn/hostname -f/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak-env.sh
 
           # Fix the JAVA_HOME Path in the script
-          sed -i 's/JAVA_HOME="\/opt\/bitnami\/java"/JAVA_HOME="\/usr\/lib\/jvm\/java-17-openjdk"/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak-env.sh
+          sed -i 's/JAVA_HOME="\/opt\/bitnami\/java"/JAVA_HOME="\/usr\/lib\/jvm\/java-21-openjdk"/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak-env.sh
 
           # Change the path for java security folder in the script
-          sed -i 's/\/opt\/bitnami\/java\/lib\/security/\/usr\/lib\/jvm\/java-17-openjdk\/conf\/security/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/java/postunpack.sh
+          sed -i 's/\/opt\/bitnami\/java\/lib\/security/\/usr\/lib\/jvm\/java-21-openjdk\/conf\/security/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/java/postunpack.sh
 
           # Disable some commands used in Bitnami scripts. These commands more likely fail in this since this image take non root approach
           sed -i 's/chown -R "$KEYCLOAK_DAEMON_USER" "$dir"/# chown -R "$KEYCLOAK_DAEMON_USER" "$dir"/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak/postunpack.sh

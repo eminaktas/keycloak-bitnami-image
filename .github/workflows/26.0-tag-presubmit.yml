@@ -5,9 +5,7 @@ on:
       - .github/actions/tag-presubmit/action.yml
       - .github/workflows/tag-presubmit.yml
       - pipelines/bitnami/compat.yaml
-      - 23/keycloak-melange.yaml
-      - 23/keycloak-metrics-spi-melange.yaml
-      - 23/apko.yaml
+      - 26.0/*
 jobs:
   build:
     name: Verify image
@@ -21,4 +19,4 @@ jobs:
       - uses: ./.github/actions/tag-presubmit
         with:
           archs: amd64 #,arm64
-          tag: 23
+          tag: "26.0"
