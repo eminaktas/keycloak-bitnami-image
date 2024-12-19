@@ -16,7 +16,7 @@ runs:
       shell: bash
       run: |
         shopt -s dotglob && tmp="$(mktemp -d)" && \
-          mv pipelines ${{ inputs.tag }}/*.yaml ${tmp}/ && \
+          mv pipelines ${{ inputs.tag }}/* ${tmp}/ && \
           mv .github ${tmp}/ && \
           rm -rf ./* && mv ${tmp}/* . && \
           echo ".github/" >> .melangeignore && tree -a . && \

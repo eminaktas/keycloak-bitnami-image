@@ -1,9 +1,9 @@
 name: build
 concurrency: build
 on:
-  schedule:
-    # Weekly
-    - cron: '0 0 * * 0'
+  # schedule:
+  #   # Weekly
+  #   - cron: '0 0 * * 0'
   push:
     branches:
       - main
@@ -11,9 +11,7 @@ on:
       - .github/actions/release/action.yml
       - .github/workflows/release.yml
       - pipelines/bitnami/compat.yaml
-      - 25/keycloak-melange.yaml
-      - 25/keycloak-metrics-spi-melange.yaml
-      - 25/apko.yaml
+      - 26.1/*
 jobs:
   build:
     name: Release image
@@ -27,7 +25,7 @@ jobs:
       - uses: ./.github/actions/release
         with:
           archs: amd64 #,arm64
-          tag: 25
+          tag: 26.1
       - uses: actions/delete-package-versions@v5
         with: 
           package-name: 'keycloak-bitnami-image'
