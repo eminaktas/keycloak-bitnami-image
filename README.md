@@ -7,7 +7,7 @@ This project aims to build a secure and up-to-date container image for Bitnami's
 | Image Tag    | Keycloak Version  | Description                               |
 |--------------|-------------------|-------------------------------------------|
 | **latest**   | **26.1.0**        | Latest stable release of Keycloak         |
-| latest-26.0  | 26.0.8            | Latest release within Keycloak version 26 |
+| latest-26.0  | 26.0.9            | Latest release within Keycloak version 26 |
 
 ## Table of Contents
 
