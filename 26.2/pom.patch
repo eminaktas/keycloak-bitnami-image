@@ -1,0 +1,16 @@
+diff --git a/pom.xml b/pom.xml
+index cbb44ed569..d97582ee5a 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -1293,6 +1293,12 @@
+                 <version>${infinispan.version}</version>
+             </dependency>
+ 
++            <dependency>
++                <groupId>io.netty</groupId>
++                <artifactId>netty-common</artifactId>
++                <version>4.1.118.Final</version>
++            </dependency>
++
+         </dependencies>
+     </dependencyManagement>

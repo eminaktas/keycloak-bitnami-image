@@ -59,8 +59,15 @@ runs:
     - name: Smoke test
       shell: bash
       run: |
+        set -e
+
         ref="ghcr.io/${{ github.repository }}:latest-smoketest-amd64"
-        docker run -d --rm -p 9000:9000 -e KEYCLOAK_DATABASE_VENDOR=dev-file -e KEYCLOAK_ENABLE_HEALTH_ENDPOINTS=true --name smoketest "${ref}"
+        docker run -d --rm -p 9000:9000 \
+          -e KEYCLOAK_DATABASE_VENDOR=dev-file \
+          -e KEYCLOAK_ENABLE_HEALTH_ENDPOINTS=true \
+          --name smoketest "${ref}"
+
         trap "docker rm -f smoketest" EXIT
         sleep 30 # Give server a few seconds to come up
-        curl -v --max-time 10 http://localhost:9000/health
+
+        curl -v --max-time 10 --fail http://localhost:9000/health
