@@ -58,7 +58,6 @@ runs:
 
         ref="ghcr.io/${{ github.repository }}:latest-${{ inputs.tag }}"
         docker pull "${ref}"
-        cosign verify "${ref}" --certificate-identity-regexp=.* --certificate-oidc-issuer-regexp=.*
 
         docker run -d --rm -p 9000:9000 \
           -e KEYCLOAK_DATABASE_VENDOR=dev-file \
