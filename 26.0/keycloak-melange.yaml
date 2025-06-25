@@ -58,7 +58,7 @@ pipeline:
   #   with:
   #     patches: pom.patch
 
-  # - uses: maven/pombump
+  - uses: maven/pombump
 
   - runs: |
       gcc napi-static-assert.c -o /tmp/preload.so -fPIC -shared -ldl

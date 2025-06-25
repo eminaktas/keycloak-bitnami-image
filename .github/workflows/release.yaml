@@ -12,6 +12,7 @@ on:
       - .github/workflows/release.yml
       - pipelines/bitnami/compat.yaml
       - 26.2/*
+  workflow_dispatch:
 jobs:
   build:
     name: Release image
