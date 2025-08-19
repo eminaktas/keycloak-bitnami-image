@@ -1,6 +1,6 @@
 package:
   name: keycloak-bitnami
-  version: 26.1.5
+  version: 26.3.2
   epoch: 0
   description: "Open Source Identity and Access Management For Modern Applications and Services"
   copyright:
@@ -10,10 +10,10 @@ package:
       license: Apache-2.0
   dependencies:
     runtime:
-      - bash # Keycloak helper scripts require bash, aren't compatible with busybox.
+      - bash
+      - merged-usrsbin
       - openjdk-21-default-jdk
-      - posix-libc-utils # getent is required for the bitnami's helper scripts
-      - wait-for-port # Keycloak uses this in their script
+      - wolfi-baselayout
   target-architecture:
     - x86_64
     # - aarch64
@@ -51,12 +51,12 @@ pipeline:
     with:
       repository: https://github.com/keycloak/keycloak
       tag: ${{package.version}}
-      expected-commit: 8d6046175da89a45c583821859ddf8ae5dfb4fcd
+      expected-commit: 6d4f529660ae0ba3025016b81942affb9540c016
 
   # Ref: https://github.com/wolfi-dev/os/blob/146ac3433fcaed0dc663836ad71086e080ddf901/keycloak/pom.patch
-  # - uses: patch
-  #   with:
-  #     patches: pom.patch
+  - uses: patch
+    with:
+      patches: pom.patch
 
   - uses: maven/pombump
 
@@ -75,17 +75,29 @@ pipeline:
       unzip -d ${{targets.destdir}}/opt/bitnami quarkus/dist/target/keycloak-*.zip
       mv ${{targets.destdir}}/opt/bitnami/keycloak-* ${{targets.destdir}}/opt/bitnami/keycloak
 
-      # Create an empty data directory for keycloak. Required by the UI to store some data.
-      mkdir -p ${{targets.destdir}}/usr/share/java/keycloak/data
-
 subpackages:
-  - name: keycloak-bitnami-compat
+  - name: ${{package.name}}-compat
     description: "compat package with bitnami/keycloak image"
+    dependencies:
+      runtime:
+        - bash # Keycloak helper scripts require bash, aren't compatible with busybox.
+        - coreutils # Keycloak Helm Chart scripts require coreutils, aren't compatible with busybox. (i.e., `cp` with `--preserve` option)
+        - krb5
+        - libaio
+        - merged-usrsbin
+        - net-tools
+        - openjdk-21-default-jdk
+        - posix-libc-utils
+        - procps
+        - su-exec
+        - wait-for-port
+        - wolfi-baselayout
+        - zlib
     pipeline:
       - uses: bitnami/compat
         with:
           image: keycloak
-          commit: 01b7718c221ede6554448f670dd1c89e3d4949dd
+          commit: e0a9851464ccad03c8a5315edd2fe3a618b8b103
           version-path: ${{vars.major-version}}/debian-12
       - runs: |
           mkdir -p ${{targets.contextdir}}/bitnami/keycloak
@@ -99,15 +111,25 @@ subpackages:
           chmod g+rwX ${{targets.contextdir}}/opt/bitnami
 
           # Change the flag for hostname command in the script otherwise, it fails by saying unknown flag for --fqdn
-          sed -i 's/hostname --fqdn/hostname -f/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak-env.sh
+          sed -i 's/hostname --fqdn/hostname -f/g' ${{targets.contextdir}}/opt/bitnami/scripts/keycloak-env.sh
 
           # Fix the JAVA_HOME Path in the script
-          sed -i 's/JAVA_HOME="\/opt\/bitnami\/java"/JAVA_HOME="\/usr\/lib\/jvm\/java-21-openjdk"/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak-env.sh
+          sed -i 's/JAVA_HOME="\/opt\/bitnami\/java"/JAVA_HOME="\/usr\/lib\/jvm\/java-21-openjdk"/g' ${{targets.contextdir}}/opt/bitnami/scripts/keycloak-env.sh
 
           # Change the path for java security folder in the script
-          sed -i 's/\/opt\/bitnami\/java\/lib\/security/\/usr\/lib\/jvm\/java-21-openjdk\/conf\/security/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/java/postunpack.sh
+          sed -i 's/\/opt\/bitnami\/java\/lib\/security/\/usr\/lib\/jvm\/java-21-openjdk\/conf\/security/g' ${{targets.contextdir}}/opt/bitnami/scripts/java/postunpack.sh
+
+          # The `--userspec`` flag belongs to GNU's chroot, whereas we are use BusyBox's. As a workaround, use `su-exec` instead.
+          sed -i 's|exec chroot --userspec="$userspec" /|exec chroot / su-exec "$userspec"|' ${{targets.contextdir}}/opt/bitnami/scripts/libos.sh
+          sed -i 's|chroot --userspec="$userspec" /|chroot / su-exec "$userspec"|' ${{targets.contextdir}}/opt/bitnami/scripts/libos.sh
 
           # Disable some commands used in Bitnami scripts. These commands more likely fail in this since this image take non root approach
-          sed -i 's/chown -R "$KEYCLOAK_DAEMON_USER" "$dir"/# chown -R "$KEYCLOAK_DAEMON_USER" "$dir"/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak/postunpack.sh
-          sed -i 's/ensure_user_exists/# ensure_user_exists/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak/postunpack.sh
-          sed -i 's/am_i_root/# am_i_root/g' ${{targets.subpkgdir}}/opt/bitnami/scripts/keycloak/setup.sh
+          sed -i 's/chown -R "$KEYCLOAK_DAEMON_USER" "$dir"/# chown -R "$KEYCLOAK_DAEMON_USER" "$dir"/g' ${{targets.contextdir}}/opt/bitnami/scripts/keycloak/postunpack.sh
+          sed -i 's/ensure_user_exists/# ensure_user_exists/g' ${{targets.contextdir}}/opt/bitnami/scripts/keycloak/postunpack.sh
+          sed -i 's/am_i_root/# am_i_root/g' ${{targets.contextdir}}/opt/bitnami/scripts/keycloak/setup.sh
+
+          # Use package path while unpacking
+          find . -iname "*.sh" -exec sed 's#/opt/bitnami#${{targets.contextdir}}/opt/bitnami#g' -i {} \;
+            ${{targets.contextdir}}/opt/bitnami/scripts/keycloak/postunpack.sh || true
+          # Restore path
+          find ${{targets.contextdir}}/opt/bitnami -type f -exec sed 's#${{targets.contextdir}}##g' -i {} \;

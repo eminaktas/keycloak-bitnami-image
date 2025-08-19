@@ -1,16 +1,16 @@
 diff --git a/pom.xml b/pom.xml
-index 3ccb7aedcd..214ae5f6b9 100644
+index 1a77170680..773f228590 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -1284,6 +1284,12 @@
-                 <version>${infinispan.version}</version>
+@@ -312,6 +312,11 @@
+                 <type>pom</type>
+                 <scope>import</scope>
              </dependency>
- 
 +            <dependency>
-+                <groupId>io.netty</groupId>
-+                <artifactId>netty-common</artifactId>
-+                <version>4.1.118.Final</version>
++                <groupId>org.apache.commons</groupId>
++                <artifactId>commons-lang3</artifactId>
++                <version>3.18.0</version>
 +            </dependency>
-+
-         </dependencies>
-     </dependencyManagement>
+             <dependency>
+                 <groupId>io.quarkus.platform</groupId>
+                 <artifactId>quarkus-bom</artifactId>
