@@ -1,8 +1,8 @@
 diff --git a/pom.xml b/pom.xml
-index d8787057fe..96e45d9cb2 100644
+index 1ba8c74684..fbd0ff8058 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -310,6 +310,11 @@
+@@ -309,6 +309,11 @@
                  <type>pom</type>
                  <scope>import</scope>
              </dependency>
