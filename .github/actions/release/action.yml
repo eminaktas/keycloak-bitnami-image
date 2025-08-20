@@ -63,6 +63,9 @@ runs:
         docker run -d --rm -p 9000:9000 \
           -e KEYCLOAK_DATABASE_VENDOR=dev-file \
           -e KEYCLOAK_ENABLE_HEALTH_ENDPOINTS=true \
+          -e KC_BOOTSTRAP_ADMIN_PASSWORD=pwd \
+          -e KC_CACHE=ispn -e KC_CACHE_CONFIG_FILE=cache-ispn.xml \
+          -e KC_HTTP_MANAGEMENT_RELATIVE_PATH=/ \
           --name smoketest "${ref}"
 
         trap "docker rm -f smoketest" EXIT
