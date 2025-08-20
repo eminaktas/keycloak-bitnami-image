@@ -53,10 +53,9 @@ pipeline:
       tag: ${{package.version}}
       expected-commit: 21ef6a2d27a4558b53eb5edb4e7a6d0a576bd4e8
 
-  # Ref: https://github.com/wolfi-dev/os/blob/146ac3433fcaed0dc663836ad71086e080ddf901/keycloak/pom.patch
-  # - uses: patch
-  #   with:
-  #     patches: pom.patch
+  - uses: patch
+    with:
+      patches: pom.patch
 
   - uses: maven/pombump
 

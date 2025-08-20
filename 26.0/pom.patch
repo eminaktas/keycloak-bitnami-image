@@ -1,5 +1,5 @@
 diff --git a/pom.xml b/pom.xml
-index 1a77170680..773f228590 100644
+index 053c5d0a9e..a638f8ae8f 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -312,6 +312,11 @@
