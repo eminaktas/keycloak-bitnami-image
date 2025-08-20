@@ -10,7 +10,7 @@ on:
       - .github/actions/tag-release/action.yml
       - .github/workflows/tag-release.yml
       - pipelines/bitnami/compat.yaml
-      - 26.1/*
+      - 26.2/*
   workflow_dispatch:
 jobs:
   build:
@@ -25,4 +25,4 @@ jobs:
       - uses: ./.github/actions/tag-release
         with:
           archs: amd64 #,arm64
-          tag: "26.1"
+          tag: "26.2"

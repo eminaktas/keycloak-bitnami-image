@@ -6,9 +6,9 @@ This project aims to build a secure and up-to-date container image for Bitnami's
 
 | Image Tag    | Keycloak Version  | Description                                 |
 |--------------|-------------------|---------------------------------------------|
-| **latest**   | **26.2.5**        | Latest stable release of Keycloak           |
-| latest-26.1  | 26.1.5            | Latest release within Keycloak version 26.1 |
-| latest-26.0  | 26.0.12           | Latest release within Keycloak version 26.0 |
+| **latest**   | **26.3.2**        | Latest stable release of Keycloak           |
+| latest-26.2  | 26.2.7            | Latest release within Keycloak version 26.2 |
+| latest-26.0  | 26.0.14           | Latest release within Keycloak version 26.0 |
 
 ## Table of Contents
 
@@ -62,7 +62,7 @@ docker run --rm -v "$(pwd)":/work cgr.dev/chainguard/melange keygen
 - Build the package for Keycloak metrics SPI:
 
 ```bash
-KEYCLOAK_VERSION=26.1 docker run --privileged --rm -v "$(pwd)":/work -w /work \
+KEYCLOAK_VERSION=26.3 docker run --privileged --rm -v "$(pwd)":/work -w /work \
   cgr.dev/chainguard/melange build $KEYCLOAK_VERSION/keycloak-metrics-spi-melange.yaml \
   --signing-key melange.rsa
 ```
@@ -70,7 +70,7 @@ KEYCLOAK_VERSION=26.1 docker run --privileged --rm -v "$(pwd)":/work -w /work \
 - Build the package for Keycloak:
 
 ```bash
-KEYCLOAK_VERSION=26.1 docker run --privileged --rm -v "$(pwd)":/work -w /work \
+KEYCLOAK_VERSION=26.3 docker run --privileged --rm -v "$(pwd)":/work -w /work \
   cgr.dev/chainguard/melange build $KEYCLOAK_VERSION/keycloak-melange.yaml \
   --signing-key melange.rsa --pipeline-dir pipelines
 ```
@@ -78,7 +78,7 @@ KEYCLOAK_VERSION=26.1 docker run --privileged --rm -v "$(pwd)":/work -w /work \
 - Build the container image:
 
 ```bash
-KEYCLOAK_VERSION=26.1 docker run --rm -v "$(pwd)":/work -w /work cgr.dev/chainguard/apko build $KEYCLOAK_VERSION/apko.yaml \
+KEYCLOAK_VERSION=26.3 docker run --rm -v "$(pwd)":/work -w /work cgr.dev/chainguard/apko build $KEYCLOAK_VERSION/apko.yaml \
   keycloak-bitnami-image:latest keycloak-bitnami-image-latest.tar \
   --keyring-append melange.rsa.pub
 ```
