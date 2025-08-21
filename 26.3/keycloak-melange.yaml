@@ -96,7 +96,7 @@ subpackages:
       - uses: bitnami/compat
         with:
           image: keycloak
-          commit: e0a9851464ccad03c8a5315edd2fe3a618b8b103
+          commit: 44134d77ca5cf49f8c183f8285d9d6e82bd5c8e8
           version-path: ${{vars.major-version}}/debian-12
       - runs: |
           mkdir -p ${{targets.contextdir}}/bitnami/keycloak
