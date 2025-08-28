@@ -42,10 +42,15 @@ runs:
       run: |
         rm -rf .apko-automount && cp -r /work .apko-automount
 
+    - name: Set image name
+      shell: bash
+      id: image
+      run: echo "IMAGE=ghcr.io/${{ github.repository }}:latest-smoketest" >> $GITHUB_OUTPUT
+
     - uses: chainguard-images/actions/apko-build@main
       with:
         config: apko.yaml
-        tag: ghcr.io/${{ github.repository }}:latest-smoketest
+        tag: ${{ steps.image.outputs.IMAGE }}
         keyring-append: /work/melange.rsa.pub
         archs: ${{ inputs.archs }}
         automount-src: .apko-automount/.
@@ -61,16 +66,55 @@ runs:
       run: |
         set -e
 
-        ref="ghcr.io/${{ github.repository }}:latest-smoketest-amd64"
         docker run -d --rm -p 9000:9000 \
           -e KEYCLOAK_DATABASE_VENDOR=dev-file \
           -e KEYCLOAK_ENABLE_HEALTH_ENDPOINTS=true \
           -e KC_BOOTSTRAP_ADMIN_PASSWORD=pwd \
           -e KC_CACHE=ispn -e KC_CACHE_CONFIG_FILE=cache-ispn.xml \
           -e KC_HTTP_MANAGEMENT_RELATIVE_PATH=/ \
-          --name smoketest "${ref}"
+          --name smoketest "${{ steps.image.outputs.IMAGE }}-amd64"
 
         trap "docker rm -f smoketest" EXIT
         sleep 30 # Give server a few seconds to come up
 
         curl -v --max-time 10 --fail http://localhost:9000/health
+
+    - name: Scan image
+      uses: anchore/scan-action@v6
+      id: scan
+      with:
+        image: "${{ steps.image.outputs.IMAGE }}-amd64"
+        fail-build: false
+        output-format: json
+
+    - name: Generate Markdown report
+      shell: bash
+      run: |
+        jq -r '
+          def sanitize(s): if s then s|tostring|gsub("\\|"; "\\\\|") else "" end;
+          def vuln_link(v):
+            if v.id|startswith("CVE-") then
+              "[" + v.id + "](https://nvd.nist.gov/vuln/detail/" + v.id + ")"
+            elif v.id|startswith("GHSA-") then
+              "[" + v.id + "](https://github.com/advisories/" + v.id + ")"
+            else
+              v.id
+            end;
+          def row(m):
+            "| " + sanitize(m.artifact.name)
+            + " | " + sanitize(m.artifact.version)
+            + " | " + sanitize(m.artifact.type)
+            + " | " + vuln_link(m.vulnerability)
+            + " | " + sanitize(m.vulnerability.severity)
+            + " |";
+          "# 🔍 Anchore/Grype scan results ${{ inputs.tag }}\n\n" +
+          "| NAME | INSTALLED | TYPE | VULNERABILITY | SEVERITY |\n" +
+          "|---|---|---|---|---|\n" +
+          ( .matches | map(row(.)) | join("\n") )
+        ' "${{ steps.scan.outputs.json }}" > scan_results.md
+
+    - name: Comment or update PR
+      uses: thollander/actions-comment-pull-request@v3
+      with:
+        file-path: scan_results.md
+        comment-tag: ${{ inputs.tag }}
