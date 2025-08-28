@@ -45,7 +45,7 @@ runs:
     - name: Set image name
       shell: bash
       id: image
-      run: echo "ghcr.io/${{ github.repository }}:latest-${{ inputs.tag }}" >> $GITHUB_OUTPUT
+      run: echo "IMAGE=ghcr.io/${{ github.repository }}:latest-${{ inputs.tag }}" >> $GITHUB_OUTPUT
 
     - uses: chainguard-images/actions/apko-publish@main
       with:
