@@ -3,8 +3,14 @@ patches:
     artifactId: postgresql
     version: 42.7.7
   - groupId: io.netty
+    artifactId: netty-codec
+    version: 4.1.126.Final
+  - groupId: io.netty
+    artifactId: netty-codec-http
+    version: 4.1.126.Final
+  - groupId: io.netty
     artifactId: netty-codec-http2
-    version: 4.1.124.Final
+    version: 4.1.126.Final
   - groupId: io.quarkus
     artifactId: quarkus-vertx
     version: 3.15.6.1
