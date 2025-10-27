@@ -1,6 +1,6 @@
 package:
   name: keycloak-bitnami
-  version: 26.4.1
+  version: 26.4.2
   epoch: 0
   description: "Open Source Identity and Access Management For Modern Applications and Services"
   copyright:
@@ -51,11 +51,11 @@ pipeline:
     with:
       repository: https://github.com/keycloak/keycloak
       tag: ${{package.version}}
-      expected-commit: 802e43c58ee8989a1beb8e5d905aa73c1ca21e4b
+      expected-commit: 60dc235ca35db219c25f4ae601d5b91a9a7d31ee
 
-  # - uses: patch
-  #   with:
-  #     patches: pom.patch
+  - uses: patch
+    with:
+      patches: pom.patch
 
   # - uses: maven/pombump
 
