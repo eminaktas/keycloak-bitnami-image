@@ -1,8 +1,8 @@
 diff --git a/pom.xml b/pom.xml
-index 053c5d0a9e..a638f8ae8f 100644
+index 8205165460..3422cdc36d 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -312,6 +312,11 @@
+@@ -312,6 +312,16 @@
                  <type>pom</type>
                  <scope>import</scope>
              </dependency>
@@ -10,6 +10,11 @@ index 053c5d0a9e..a638f8ae8f 100644
 +                <groupId>org.apache.commons</groupId>
 +                <artifactId>commons-lang3</artifactId>
 +                <version>3.19.0</version>
++            </dependency>
++            <dependency>
++                <groupId>io.vertx</groupId>
++                <artifactId>vertx-web</artifactId>
++                <version>4.5.22</version>
 +            </dependency>
              <dependency>
                  <groupId>io.quarkus.platform</groupId>

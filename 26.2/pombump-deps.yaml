@@ -1,10 +1,10 @@
 patches:
-  - groupId: io.netty
-    artifactId: netty-codec
-    version: 4.1.126.Final
-  - groupId: io.netty
-    artifactId: netty-codec-http
-    version: 4.1.126.Final
-  # - groupId: io.netty
-  #   artifactId: netty-codec-http2
-  #   version: 4.1.126.Final
+  - groupId: com.microsoft.sqlserver
+    artifactId: mssql-jdbc
+    version: 12.8.2.jre11
+#   - groupId: io.netty
+#     artifactId: netty-codec-http
+#     version: 4.1.126.Final
+#   - groupId: io.netty
+#     artifactId: netty-codec-http2
+#     version: 4.1.126.Final
