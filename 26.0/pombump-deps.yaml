@@ -1,16 +1,8 @@
 patches:
-  - groupId: org.postgresql
-    artifactId: postgresql
-    version: 42.7.7
-  - groupId: io.netty
-    artifactId: netty-codec
-    version: 4.1.126.Final
-  - groupId: io.netty
-    artifactId: netty-codec-http
-    version: 4.1.126.Final
-  - groupId: io.netty
-    artifactId: netty-codec-http2
-    version: 4.1.126.Final
-  - groupId: io.quarkus
-    artifactId: quarkus-vertx
-    version: 3.15.6.1
+  - groupId: com.microsoft.sqlserver
+    artifactId: mssql-jdbc
+    version: 12.8.2.jre11
+  # Can't be updated to new version from 1.78.1
+  # - groupId: org.bouncycastle
+  #   artifactId: bcpkix-jdk18on
+  #   version: 1.79
