@@ -1,8 +1,0 @@
-patches:
-  - groupId: com.microsoft.sqlserver
-    artifactId: mssql-jdbc
-    version: 12.8.2.jre11
-#   # Can't be updated to new version from 1.78.1
-#   - groupId: org.bouncycastle
-#     artifactId: bcpkix-jdk18on
-#     version: 1.79
