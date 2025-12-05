@@ -1,3 +1,0 @@
-properties:
-  - property: mssql-jdbc.version
-    value: "12.8.2.jre11"
