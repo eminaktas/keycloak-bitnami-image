@@ -1,4 +1,5 @@
 name: presubmit
+concurrency: presubmit
 on:
   pull_request:
     paths:

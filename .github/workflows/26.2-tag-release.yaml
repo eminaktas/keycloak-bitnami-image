@@ -1,4 +1,5 @@
-name: tag-build
+name: 26_2-tag-release
+concurrency: release
 on:
   # schedule:
   #   # Weekly
@@ -8,7 +9,7 @@ on:
       - main
     paths:
       - .github/actions/tag-release/action.yml
-      - .github/workflows/tag-release.yml
+      - .github/workflows/26.2-tag-release.yml
       - pipelines/bitnami/compat.yaml
       - 26.2/*
   workflow_dispatch:

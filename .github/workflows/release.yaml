@@ -1,5 +1,5 @@
-name: build
-concurrency: build
+name: release
+concurrency: release
 on:
   # schedule:
   #   # Weekly
