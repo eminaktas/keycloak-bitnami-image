@@ -5,7 +5,7 @@ on:
       - .github/actions/presubmit/action.yml
       - .github/workflows/presubmit.yml
       - pipelines/bitnami/compat.yaml
-      - 26.5/*
+      - 26.4/*
 jobs:
   build:
     name: Verify image
@@ -20,4 +20,4 @@ jobs:
       - uses: ./.github/actions/presubmit
         with:
           archs: amd64 #,arm64
-          tag: 26.5
+          tag: 26.4

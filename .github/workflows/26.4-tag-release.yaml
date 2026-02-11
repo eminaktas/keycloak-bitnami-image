@@ -11,7 +11,7 @@ on:
       - .github/actions/release/action.yml
       - .github/workflows/release.yml
       - pipelines/bitnami/compat.yaml
-      - 26.5/*
+      - 26.4/*
   workflow_dispatch:
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
       - uses: ./.github/actions/release
         with:
           archs: amd64 #,arm64
-          tag: 26.5
+          tag: 26.4
       - uses: actions/delete-package-versions@v5
         with: 
           package-name: 'keycloak-bitnami-image'

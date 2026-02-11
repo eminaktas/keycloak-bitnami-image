@@ -1,0 +1,16 @@
+diff --git a/pom.xml b/pom.xml
+index de606b4f7b..32145af1c0 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -318,6 +318,11 @@
+                 <type>pom</type>
+                 <scope>import</scope>
+             </dependency>
++            <dependency>
++                <groupId>io.vertx</groupId>
++                <artifactId>vertx-web</artifactId>
++                <version>4.5.22</version>
++            </dependency>
+             <dependency>
+                 <groupId>io.quarkus.platform</groupId>
+                 <artifactId>quarkus-bom</artifactId>
