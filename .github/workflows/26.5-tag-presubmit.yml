@@ -1,0 +1,23 @@
+name: presubmit
+on:
+  pull_request:
+    paths:
+      - .github/actions/presubmit/action.yml
+      - .github/workflows/presubmit.yml
+      - pipelines/bitnami/compat.yaml
+      - 26.5/*
+jobs:
+  build:
+    name: Verify image
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/presubmit
+        with:
+          archs: amd64 #,arm64
+          tag: 26.5
