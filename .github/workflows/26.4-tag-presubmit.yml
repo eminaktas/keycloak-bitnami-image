@@ -1,7 +1,7 @@
 name: 26_4-tag-presubmit
 concurrency: presubmit
 on:
-  pull_request:
+  pull_request_target:
     paths:
       - .github/actions/presubmit/action.yml
       - .github/workflows/26.4-tag-presubmit.yml
