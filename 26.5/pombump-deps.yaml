@@ -1,0 +1,7 @@
+patches:
+  - groupId: io.netty
+    artifactId: netty-codec
+    version: 4.1.126.Final
+  - groupId: io.netty
+    artifactId: netty-codec-http
+    version: 4.1.126.Final

@@ -1,8 +1,8 @@
 diff --git a/pom.xml b/pom.xml
-index 891d5ab350..d8f2683a28 100644
+index 84c4d51c2f..affa67afd0 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -302,6 +302,11 @@
+@@ -312,6 +312,11 @@
      <dependencyManagement>
  
          <dependencies>
