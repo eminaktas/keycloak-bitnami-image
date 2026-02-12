@@ -1,4 +1,4 @@
-name: release
+name: 26.5-release
 on:
   # schedule:
   #   # Weekly
@@ -8,7 +8,7 @@ on:
       - main
     paths:
       - .github/actions/release/action.yml
-      - .github/workflows/release.yml
+      - .github/workflows/26.5-release.yml
       - pipelines/bitnami/compat.yaml
       - 26.5/**
   workflow_dispatch:
@@ -25,7 +25,7 @@ jobs:
       - uses: ./.github/actions/release
         with:
           archs: amd64 #,arm64
-          tag: 26.5
+          tag: "latest,26.5"
       - uses: actions/delete-package-versions@v5
         with: 
           package-name: 'keycloak-bitnami-image'

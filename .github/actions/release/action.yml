@@ -40,11 +40,28 @@ runs:
       run: |
         rm -rf .apko-automount && cp -r /work .apko-automount
 
-    - uses: chainguard-images/actions/apko-snapshot@main
+    - name: Set image name
+      shell: bash
+      id: image
+      run: |
+        TAGS="${{ inputs.tag }}"
+        REPO="ghcr.io/${{ github.repository }}"
+        IMAGE_TAGS=""
+
+        IFS=',' read -ra TAG_ARRAY <<< "$TAGS"
+        for tag in "${TAG_ARRAY[@]}"; do
+          tag=$(echo "$tag" | xargs)  # Trim whitespace
+          IMAGE_TAGS="${IMAGE_TAGS} ${REPO}:${tag}"
+        done
+
+        IMAGE_TAGS=$(echo "$IMAGE_TAGS" | xargs)  # Trim leading/trailing whitespace
+        echo "IMAGE=${IMAGE_TAGS}" >> $GITHUB_OUTPUT
+
+    - uses: chainguard-images/actions/apko-publish@main
       with:
         archs: ${{ inputs.archs }}
         config: apko.yaml
-        base-tag: ghcr.io/${{ github.repository }}
+        tag: ${{ steps.image.outputs.IMAGE }}
         keyring-append: /work/melange.rsa.pub
         automount-src: .apko-automount/.
         automount-dest: /work
@@ -54,7 +71,10 @@ runs:
       run: |
         set -e
 
-        ref="ghcr.io/${{ github.repository }}"
+        # Use the first tag for smoke testing
+        refs="${{ steps.image.outputs.IMAGE }}"
+        ref=$(echo "$refs" | awk '{print $1}')
+
         docker pull "${ref}"
         cosign verify "${ref}" --certificate-identity-regexp=.* --certificate-oidc-issuer-regexp=.*
 
