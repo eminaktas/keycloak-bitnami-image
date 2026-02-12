@@ -1,11 +1,11 @@
-name: 26_4-tag-presubmit
+name: "26.2-presubmit"
 on:
   pull_request:
     paths:
       - .github/actions/presubmit/action.yml
-      - .github/workflows/26.4-tag-presubmit.yml
+      - .github/workflows/26.2-presubmit.yml
       - pipelines/bitnami/compat.yaml
-      - 26.4/**
+      - 26.2/**
 permissions:
   contents: read
   pull-requests: write
@@ -19,4 +19,4 @@ jobs:
       - uses: ./.github/actions/presubmit
         with:
           archs: amd64 #,arm64
-          tag: 26.4
+          tag: "26.2"

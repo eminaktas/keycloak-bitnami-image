@@ -1,4 +1,4 @@
-name: 26_2-tag-release
+name: "26.4-release"
 on:
   # schedule:
   #   # Weekly
@@ -7,10 +7,10 @@ on:
     branches:
       - main
     paths:
-      - .github/actions/tag-release/action.yml
-      - .github/workflows/26.2-tag-release.yml
+      - .github/actions/release/action.yml
+      - .github/workflows/26.4-release.yml
       - pipelines/bitnami/compat.yaml
-      - 26.2/**
+      - 26.4/**
   workflow_dispatch:
 jobs:
   build:
@@ -22,7 +22,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/tag-release
+      - uses: ./.github/actions/release
         with:
           archs: amd64 #,arm64
-          tag: "26.2"
+          tag: "26.4"

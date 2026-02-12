@@ -1,11 +1,11 @@
-name: 26_2-tag-presubmit
+name: "26.5-presubmit"
 on:
   pull_request:
     paths:
-      - .github/actions/tag-presubmit/action.yml
-      - .github/workflows/26.2-tag-presubmit.yml
+      - .github/actions/presubmit/action.yml
+      - .github/workflows/26.5-presubmit.yml
       - pipelines/bitnami/compat.yaml
-      - 26.2/*
+      - 26.5/**
 permissions:
   contents: read
   pull-requests: write
@@ -16,7 +16,7 @@ jobs:
     # environment: presubmit-approval
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/tag-presubmit
+      - uses: ./.github/actions/presubmit
         with:
           archs: amd64 #,arm64
-          tag: "26.2"
+          tag: "26.5"

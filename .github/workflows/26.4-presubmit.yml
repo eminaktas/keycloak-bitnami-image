@@ -1,11 +1,11 @@
-name: presubmit
+name: "26.4-presubmit"
 on:
   pull_request:
     paths:
       - .github/actions/presubmit/action.yml
-      - .github/workflows/presubmit.yml
+      - .github/workflows/26.4-presubmit.yml
       - pipelines/bitnami/compat.yaml
-      - 26.5/**
+      - 26.4/**
 permissions:
   contents: read
   pull-requests: write
@@ -19,4 +19,4 @@ jobs:
       - uses: ./.github/actions/presubmit
         with:
           archs: amd64 #,arm64
-          tag: 26.5
+          tag: "26.4"
