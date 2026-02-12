@@ -1,5 +1,4 @@
 name: 26_4-tag-release
-concurrency: release
 on:
   # schedule:
   #   # Weekly
@@ -11,7 +10,7 @@ on:
       - .github/actions/tag-release/action.yml
       - .github/workflows/26.4-tag-release.yml
       - pipelines/bitnami/compat.yaml
-      - 26.4/*
+      - 26.4/**
   workflow_dispatch:
 jobs:
   build:

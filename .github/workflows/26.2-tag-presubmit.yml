@@ -1,21 +1,19 @@
 name: 26_2-tag-presubmit
-concurrency: presubmit
 on:
-  pull_request_target:
+  pull_request:
     paths:
       - .github/actions/tag-presubmit/action.yml
       - .github/workflows/26.2-tag-presubmit.yml
       - pipelines/bitnami/compat.yaml
       - 26.2/*
+permissions:
+  contents: read
+  pull-requests: write
 jobs:
   build:
     name: Verify image
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      packages: write
-      contents: read
-      pull-requests: write
+    environment: presubmit-approval
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/tag-presubmit
