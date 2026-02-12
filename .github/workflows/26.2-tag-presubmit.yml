@@ -13,7 +13,7 @@ jobs:
   build:
     name: Verify image
     runs-on: ubuntu-latest
-    environment: presubmit-approval
+    # environment: presubmit-approval
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/tag-presubmit

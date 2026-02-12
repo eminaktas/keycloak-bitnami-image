@@ -53,9 +53,9 @@ pipeline:
       tag: ${{package.version}}
       expected-commit: f732b8035cd7c2671c0ec672e84cfccfa4cf0a68
 
-  # - uses: patch
-  #   with:
-  #     patches: pom.patch
+  - uses: patch
+    with:
+      patches: pom.patch
 
   # - uses: maven/pombump
 
