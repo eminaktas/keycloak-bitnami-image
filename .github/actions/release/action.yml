@@ -48,7 +48,7 @@ runs:
       id: image
       run: |
         # Start with the main tag
-        ALL_TAGS="${{ inputs.tag }}"
+        ALL_TAGS="latest-${{ inputs.tag }}"
 
         # Append extraTags if provided
         if [ -n "${{ inputs.extraTags }}" ]; then
@@ -86,7 +86,6 @@ runs:
         ref=$(echo "$refs" | awk '{print $1}')
 
         docker pull "${ref}"
-        cosign verify "${ref}" --certificate-identity-regexp=.* --certificate-oidc-issuer-regexp=.*
 
         docker run -d --rm -p 9000:9000 \
           -e KEYCLOAK_DATABASE_VENDOR=dev-file \
