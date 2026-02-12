@@ -7,6 +7,9 @@ inputs:
   tag:
     description: "tag"
     required: true
+  extraTags:
+    description: "extra tag"
+    required: false
 runs:
   using: composite
   steps:
@@ -44,11 +47,18 @@ runs:
       shell: bash
       id: image
       run: |
-        TAGS="${{ inputs.tag }}"
+        # Start with the main tag
+        ALL_TAGS="${{ inputs.tag }}"
+
+        # Append extraTags if provided
+        if [ -n "${{ inputs.extraTags }}" ]; then
+          ALL_TAGS="${ALL_TAGS},${{ inputs.extraTags }}"
+        fi
+
         REPO="ghcr.io/${{ github.repository }}"
         IMAGE_TAGS=""
 
-        IFS=',' read -ra TAG_ARRAY <<< "$TAGS"
+        IFS=',' read -ra TAG_ARRAY <<< "$ALL_TAGS"
         for tag in "${TAG_ARRAY[@]}"; do
           tag=$(echo "$tag" | xargs)  # Trim whitespace
           IMAGE_TAGS="${IMAGE_TAGS} ${REPO}:${tag}"

@@ -25,7 +25,8 @@ jobs:
       - uses: ./.github/actions/release
         with:
           archs: amd64 #,arm64
-          tag: "latest,26.5"
+          tag: "26.5"
+          extraTags: "latest"
       - uses: actions/delete-package-versions@v5
         with: 
           package-name: 'keycloak-bitnami-image'
