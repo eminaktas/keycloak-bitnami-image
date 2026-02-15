@@ -14,9 +14,9 @@ package:
       - merged-usrsbin
       - openjdk-21-default-jdk
       - wolfi-baselayout
-  target-architecture:
-    - x86_64
-    # - aarch64
+  checks:
+    disabled:
+      - opt
 
 # Create a new major-version variable that contains only the major version
 # to use in the bitnami/compat pipeline to find out the correct folder for the image.

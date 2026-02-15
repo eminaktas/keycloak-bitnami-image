@@ -8,9 +8,9 @@ package:
         - "*"
       attestation: ""
       license: Apache-2.0
-  target-architecture:
-    - x86_64
-    # - aarch64
+  checks:
+    disabled:
+      - opt
 
 environment:
   contents:

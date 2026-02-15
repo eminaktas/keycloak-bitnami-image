@@ -10,10 +10,6 @@ contents:
     - keycloak-bitnami-compat@local
     - keycloak-metrics-spi-bitnami@local
 
-archs:
-  - x86_64
-  # - aarch64
-
 accounts:
   groups:
     - groupname: nonroot

@@ -1,15 +1,18 @@
 name: release
 description: "release"
 inputs:
-  archs:
-    description: "archs"
-    required: true
   tag:
-    description: "tag"
+    description: |
+      The tags to release images with.
     required: true
   extraTags:
-    description: "extra tag"
+    description: |
+      The extra tags to release images with.
     required: false
+  archs:
+    description: |
+      The architectures to release images with.
+    default: x86_64 #,aarch64
 runs:
   using: composite
   steps:
@@ -17,25 +20,25 @@ runs:
       shell: bash
       run: |
         shopt -s dotglob && tmp="$(mktemp -d)" && \
-          mv pipelines ${{ inputs.tag }}/* ${tmp}/ && \
+          mv melange.rsa.pub pipelines ${{ inputs.tag }}/* ${tmp}/ && \
           mv .github ${tmp}/ && \
           rm -rf ./* && mv ${tmp}/* . && \
           echo ".github/" >> .melangeignore && tree -a . && \
           sudo rm -rf /work && sudo mkdir /work
 
-    # - name: Setup QEMU
-    #   uses: docker/setup-qemu-action@v3
-    #   with:
-    #     platforms: ${{ inputs.archs }}
+    - name: Write melange key
+      shell: bash
+      run: |
+        printf '%s' "$MELANGE_PRIVATE_KEY" > melange.rsa
+        chmod 0600 melange.rsa
 
-    - uses: chainguard-dev/actions/melange-build@main
+    - uses: eminaktas/actions/melange-build@feat/sign-own-key
       with:
         archs: ${{ inputs.archs }}
         multi-config: keycloak-melange.yaml,keycloak-metrics-spi-melange.yaml
-        signing-key-path: /work/melange.rsa
+        sign-with-own-key: true
+        signing-key-path: melange.rsa
         repository-path: /work/packages
-        empty-workspace: false
-        sign-with-temporary-key: true
         pipeline-dir: pipelines
 
     - name: Create temp copy of /work directory (used in next step)
@@ -67,14 +70,24 @@ runs:
         IMAGE_TAGS=$(echo "$IMAGE_TAGS" | xargs)  # Trim leading/trailing whitespace
         echo "IMAGE=${IMAGE_TAGS}" >> $GITHUB_OUTPUT
 
+    - name: Generate snapshot date
+      id: snapshot-date
+      run: |
+        echo ::set-output name=date::$(date -u +%Y%m%d)
+        echo ::set-output name=epoch::$(date -u +%s)
+      shell: bash
+
     - uses: chainguard-images/actions/apko-publish@main
       with:
         archs: ${{ inputs.archs }}
         config: apko.yaml
         tag: ${{ steps.image.outputs.IMAGE }}
-        keyring-append: /work/melange.rsa.pub
+        keyring-append: melange.rsa.pub
         automount-src: .apko-automount/.
         automount-dest: /work
+        source-date-epoch: ${{ steps.snapshot-date.outputs.epoch }}
+
+    - uses: sigstore/cosign-installer@main
 
     - name: Smoke test
       shell: bash
@@ -87,15 +100,16 @@ runs:
 
         docker pull "${ref}"
 
-        docker run -d --rm -p 9000:9000 \
-          -e KEYCLOAK_DATABASE_VENDOR=dev-file \
+        cosign verify "${ref}" --key melange.rsa.pub
+
+        docker run -d --rm -p 9000:9000 -p 8080:8080 \
+          -e KEYCLOAK_DATABASE_VENDOR=dev-mem \
           -e KEYCLOAK_ENABLE_HEALTH_ENDPOINTS=true \
-          -e KC_BOOTSTRAP_ADMIN_PASSWORD=pwd \
-          -e KC_CACHE=ispn -e KC_CACHE_CONFIG_FILE=cache-ispn.xml \
-          -e KC_HTTP_MANAGEMENT_RELATIVE_PATH=/ \
+          -e KC_BOOTSTRAP_ADMIN_PASSWORD=keycloak123 \
           --name smoketest "${ref}"
 
         trap "docker rm -f smoketest" EXIT
         sleep 30 # Give server a few seconds to come up
 
         curl -v --max-time 10 --fail http://localhost:9000/health
+        curl -v --max-time 10 --fail http://localhost:8080/realms/master/metrics

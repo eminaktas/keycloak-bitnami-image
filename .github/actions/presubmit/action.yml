@@ -1,12 +1,14 @@
 name: presubmit
 description: "presubmit"
 inputs:
-  archs:
-    description: "archs"
-    required: true
   tag:
-    description: "tag"
+    description: |
+      The tags to release images with.
     required: true
+  archs:
+    description: |
+      The architectures to release images with.
+    default: x86_64 #,aarch64
 runs:
   using: composite
   steps:
@@ -20,20 +22,14 @@ runs:
           echo ".github/" >> .melangeignore && tree -a . && \
           sudo rm -rf /work && sudo mkdir /work
 
-    # - name: Setup QEMU
-    #   uses: docker/setup-qemu-action@v3
-    #   with:
-    #     platforms: ${{ inputs.archs }}
-
     - uses: chainguard-dev/actions/melange-build@main
       with:
         archs: ${{ inputs.archs }}
         multi-config: keycloak-melange.yaml,keycloak-metrics-spi-melange.yaml
-        signing-key-path: /work/melange.rsa
         repository-path: /work/packages
-        empty-workspace: false
-        sign-with-temporary-key: true
         pipeline-dir: pipelines
+        sign-with-temporary-key: true
+        signing-key-path: /work/melange.rsa
 
     - name: Create temp copy of /work directory (used in next step)
       shell: bash
@@ -45,6 +41,13 @@ runs:
       id: image
       run: echo "IMAGE=ghcr.io/${{ github.repository }}:${{ inputs.tag }}-smoketest" >> $GITHUB_OUTPUT
 
+    - name: Generate snapshot date
+      id: snapshot-date
+      run: |
+        echo ::set-output name=date::$(date -u +%Y%m%d)
+        echo ::set-output name=epoch::$(date -u +%s)
+      shell: bash
+
     - uses: chainguard-images/actions/apko-build@main
       with:
         config: apko.yaml
@@ -53,6 +56,7 @@ runs:
         archs: ${{ inputs.archs }}
         automount-src: .apko-automount/.
         automount-dest: /work
+        source-date-epoch: ${{ steps.snapshot-date.outputs.epoch }}
 
     - name: Load image from apko-produced tarball
       shell: bash
@@ -64,21 +68,20 @@ runs:
       run: |
         set -e
 
-        docker run -d --rm -p 9000:9000 \
-          -e KEYCLOAK_DATABASE_VENDOR=dev-file \
+        docker run -d --rm -p 9000:9000 -p 8080:8080 \
+          -e KEYCLOAK_DATABASE_VENDOR=dev-mem \
           -e KEYCLOAK_ENABLE_HEALTH_ENDPOINTS=true \
-          -e KC_BOOTSTRAP_ADMIN_PASSWORD=pwd \
-          -e KC_CACHE=ispn -e KC_CACHE_CONFIG_FILE=cache-ispn.xml \
-          -e KC_HTTP_MANAGEMENT_RELATIVE_PATH=/ \
+          -e KC_BOOTSTRAP_ADMIN_PASSWORD=keycloak123 \
           --name smoketest "${{ steps.image.outputs.IMAGE }}-amd64"
 
         trap "docker rm -f smoketest" EXIT
         sleep 30 # Give server a few seconds to come up
 
         curl -v --max-time 10 --fail http://localhost:9000/health
+        curl -v --max-time 10 --fail http://localhost:8080/realms/master/metrics
 
     - name: Scan image
-      uses: anchore/scan-action@v6
+      uses: anchore/scan-action@v7
       id: scan
       with:
         image: "${{ steps.image.outputs.IMAGE }}-amd64"
