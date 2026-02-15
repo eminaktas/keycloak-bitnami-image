@@ -1,8 +1,5 @@
 name: "26.4-release"
 on:
-  # schedule:
-  #   # Weekly
-  #   - cron: '0 0 * * 0'
   push:
     branches:
       - main
@@ -23,6 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/release
+        env:
+          MELANGE_PRIVATE_KEY: ${{ secrets.MELANGE_PRIVATE_KEY }}
         with:
-          archs: amd64 #,arm64
           tag: "26.4"

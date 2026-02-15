@@ -13,10 +13,10 @@ jobs:
   build:
     name: Verify image
     runs-on: ubuntu-latest
-    # environment: presubmit-approval
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/presubmit
+        env:
+          MELANGE_PRIVATE_KEY: ${{ secrets.MELANGE_PRIVATE_KEY }}
         with:
-          archs: amd64 #,arm64
           tag: "26.2"

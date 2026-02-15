@@ -34,8 +34,8 @@ To quickly get started, run the following command to launch Keycloak Bitnami usi
 
 ```bash
 docker run --rm -it -p 8080:8080 \
-  -e KEYCLOAK_DATABASE_VENDOR=dev-file \
-  -e KEYCLOAK_ENABLE_HEALTH_ENDPOINTS=true \
+  -e KC_BOOTSTRAP_ADMIN_PASSWORD=keycloak123 \
+  -e KEYCLOAK_DATABASE_VENDOR=dev-mem \
   ghcr.io/eminaktas/keycloak-bitnami-image:latest
 ```
 
