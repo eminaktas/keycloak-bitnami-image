@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    name: Release image with tag
+    name: Release image
     runs-on: ubuntu-latest
     permissions:
       id-token: write

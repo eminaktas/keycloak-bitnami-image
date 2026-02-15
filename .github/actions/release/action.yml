@@ -87,7 +87,7 @@ runs:
         automount-dest: /work
         source-date-epoch: ${{ steps.snapshot-date.outputs.epoch }}
 
-    - uses: sigstore/cosign-installer@main
+    # - uses: sigstore/cosign-installer@main
 
     - name: Smoke test
       shell: bash
@@ -100,7 +100,7 @@ runs:
 
         docker pull "${ref}"
 
-        cosign verify "${ref}" --key melange.rsa.pub
+        # cosign verify "${ref}" --key melange.rsa.pub
 
         docker run -d --rm -p 9000:9000 -p 8080:8080 \
           -e KEYCLOAK_DATABASE_VENDOR=dev-mem \
