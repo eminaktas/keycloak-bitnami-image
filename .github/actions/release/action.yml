@@ -32,7 +32,7 @@ runs:
         printf '%s' "$MELANGE_PRIVATE_KEY" > melange.rsa
         chmod 0600 melange.rsa
 
-    - uses: eminaktas/actions/melange-build@feat/sign-own-key
+    - uses: chainguard-dev/actions/melange-build@main
       with:
         archs: ${{ inputs.archs }}
         multi-config: keycloak-melange.yaml,keycloak-metrics-spi-melange.yaml
