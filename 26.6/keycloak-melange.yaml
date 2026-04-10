@@ -1,7 +1,7 @@
 package:
   name: keycloak-bitnami
-  version: 26.4.11
-  epoch: 1
+  version: 26.6.0
+  epoch: 0
   description: "Open Source Identity and Access Management For Modern Applications and Services"
   copyright:
     - paths:
@@ -12,7 +12,7 @@ package:
     runtime:
       - bash
       - merged-usrsbin
-      - openjdk-21-default-jdk
+      - openjdk-25-default-jdk
       - wolfi-baselayout
   checks:
     disabled:
@@ -39,36 +39,30 @@ environment:
       - busybox
       - ca-certificates-bundle
       - gcc-13-default
-      - openjdk-21-default-jdk
+      - nodejs
+      - openjdk-25-default-jdk
+      - pnpm
       - wolfi-base
       - wolfi-baselayout
   environment:
     LANG: en_US.UTF-8
-    JAVA_HOME: /usr/lib/jvm/java-21-openjdk
+    JAVA_HOME: /usr/lib/jvm/java-25-openjdk
 
 pipeline:
   - uses: git-checkout
     with:
       repository: https://github.com/keycloak/keycloak
       tag: ${{package.version}}
-      expected-commit: 6372cc228741e2a844493eabb1eb5f7fd9d15974
+      expected-commit: 0526b94f0ddf166a210e39fd69d897ab4bb14431
 
-  - uses: patch
-    with:
-      patches: pom.patch
+  # - uses: patch
+  #   with:
+  #     patches: pom.patch
 
   - uses: maven/pombump
 
   - runs: |
-      gcc napi-static-assert.c -o /tmp/preload.so -fPIC -shared -ldl
-
-  - runs: |
-      # Build keycloak-server. Depends on `keycloak-js-adapter-jar`.
-      # Gross hack to work around broken NAPI ast-grep module that has
-      # undefined symbol: static_assert
-      export LD_PRELOAD=/tmp/preload.so
       ./mvnw clean install --errors -DskipTests -DskipTestsuite -DskipExamples -q -DskipProtoLock=true
-      unset LD_PRELOAD
 
       mkdir -p ${{targets.destdir}}/opt/bitnami
       unzip -d ${{targets.destdir}}/opt/bitnami quarkus/dist/target/keycloak-*.zip
@@ -85,7 +79,7 @@ subpackages:
         - libaio
         - merged-usrsbin
         - net-tools
-        - openjdk-21-default-jdk
+        - openjdk-25-default-jdk
         - posix-libc-utils
         - procps
         - su-exec
@@ -96,7 +90,7 @@ subpackages:
       - uses: bitnami/compat
         with:
           image: keycloak
-          commit: 3f954a8ceaf9c63ec0c8ca27d16d8c14889ec5a9
+          commit: 4a8bdf52699e3e5a0b2991648dc07670e7029d61
           version-path: ${{vars.major-version}}/debian-12
       - runs: |
           mkdir -p ${{targets.contextdir}}/bitnami/keycloak
@@ -113,10 +107,10 @@ subpackages:
           sed -i 's/hostname --fqdn/hostname -f/g' ${{targets.contextdir}}/opt/bitnami/scripts/keycloak-env.sh
 
           # Fix the JAVA_HOME Path in the script
-          sed -i 's/JAVA_HOME="\/opt\/bitnami\/java"/JAVA_HOME="\/usr\/lib\/jvm\/java-21-openjdk"/g' ${{targets.contextdir}}/opt/bitnami/scripts/keycloak-env.sh
+          sed -i 's/JAVA_HOME="\/opt\/bitnami\/java"/JAVA_HOME="\/usr\/lib\/jvm\/java-25-openjdk"/g' ${{targets.contextdir}}/opt/bitnami/scripts/keycloak-env.sh
 
           # Change the path for java security folder in the script
-          sed -i 's/\/opt\/bitnami\/java\/lib\/security/\/usr\/lib\/jvm\/java-21-openjdk\/conf\/security/g' ${{targets.contextdir}}/opt/bitnami/scripts/java/postunpack.sh
+          sed -i 's/\/opt\/bitnami\/java\/lib\/security/\/usr\/lib\/jvm\/java-25-openjdk\/conf\/security/g' ${{targets.contextdir}}/opt/bitnami/scripts/java/postunpack.sh
 
           # The `--userspec`` flag belongs to GNU's chroot, whereas we are use BusyBox's. As a workaround, use `su-exec` instead.
           sed -i 's|exec chroot --userspec="$userspec" /|exec chroot / su-exec "$userspec"|' ${{targets.contextdir}}/opt/bitnami/scripts/libos.sh
