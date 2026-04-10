@@ -1,7 +1,7 @@
 package:
   name: keycloak-bitnami
   version: 26.5.7
-  epoch: 0
+  epoch: 1
   description: "Open Source Identity and Access Management For Modern Applications and Services"
   copyright:
     - paths:
@@ -96,7 +96,7 @@ subpackages:
       - uses: bitnami/compat
         with:
           image: keycloak
-          commit: 6279eaa75f3a083a7c1e60034f7f85e08c74eab8
+          commit: 5427a07cd20b50d449307e86ac52826874c95c15
           version-path: ${{vars.major-version}}/debian-12
       - runs: |
           mkdir -p ${{targets.contextdir}}/bitnami/keycloak

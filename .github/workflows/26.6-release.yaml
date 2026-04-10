@@ -1,0 +1,32 @@
+name: 26.6-release
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/actions/release/action-v2.yml
+      - .github/workflows/26.6-release.yml
+      - pipelines/bitnami/compat.yaml
+      - 26.6/**
+  workflow_dispatch:
+jobs:
+  build:
+    name: Release image
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/release-v2
+        env:
+          MELANGE_PRIVATE_KEY: ${{ secrets.MELANGE_PRIVATE_KEY }}
+        with:
+          tag: "26.6"
+          extraTags: "latest"
+      - uses: actions/delete-package-versions@v5
+        with: 
+          package-name: 'keycloak-bitnami-image'
+          package-type: 'container'
+          min-versions-to-keep: 20

@@ -1,0 +1,22 @@
+name: "26.6-presubmit"
+on:
+  pull_request:
+    paths:
+      - .github/actions/presubmit/action-v2.yml
+      - .github/workflows/26.6-presubmit.yml
+      - pipelines/bitnami/compat.yaml
+      - 26.6/**
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  build:
+    name: Verify image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/presubmit-v2
+        env:
+          MELANGE_PRIVATE_KEY: ${{ secrets.MELANGE_PRIVATE_KEY }}
+        with:
+          tag: "26.6"
