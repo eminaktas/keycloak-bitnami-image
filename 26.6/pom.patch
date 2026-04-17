@@ -1,20 +1,25 @@
 diff --git a/pom.xml b/pom.xml
-index 03a23ebaab..d89ce8e367 100644
+index 01c1d1445f..f9fce8091f 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -312,6 +312,16 @@
+@@ -319,6 +319,21 @@
      <dependencyManagement>
 
          <dependencies>
 +            <dependency>
-+                <groupId>io.vertx</groupId>
-+                <artifactId>vertx-core</artifactId>
-+                <version>4.5.24</version>
++                <groupId>org.bouncycastle</groupId>
++                <artifactId>bcpkix-jdk18on</artifactId>
++                <version>1.84</version>
 +            </dependency>
 +            <dependency>
-+                <groupId>com.fasterxml.jackson.core</groupId>
-+                <artifactId>jackson-core</artifactId>
-+                <version>2.21.1</version>
++                <groupId>org.bouncycastle</groupId>
++                <artifactId>bcprov-jdk18on</artifactId>
++                <version>1.84</version>
++            </dependency>
++            <dependency>
++                <groupId>org.bouncycastle</groupId>
++                <artifactId>bcutil-jdk18on</artifactId>
++                <version>1.84</version>
 +            </dependency>
              <dependency>
                  <groupId>org.infinispan</groupId>
