@@ -1,7 +1,7 @@
 package:
   name: keycloak-bitnami
-  version: 26.6.0
-  epoch: 1
+  version: 26.6.1
+  epoch: 0
   description: "Open Source Identity and Access Management For Modern Applications and Services"
   copyright:
     - paths:
@@ -12,7 +12,7 @@ package:
     runtime:
       - bash
       - merged-usrsbin
-      - openjdk-25-default-jdk
+      - openjdk-21-default-jdk
       - wolfi-baselayout
   checks:
     disabled:
@@ -40,24 +40,24 @@ environment:
       - ca-certificates-bundle
       - gcc-13-default
       - nodejs
-      - openjdk-25-default-jdk
+      - openjdk-21-default-jdk
       - pnpm
       - wolfi-base
       - wolfi-baselayout
   environment:
     LANG: en_US.UTF-8
-    JAVA_HOME: /usr/lib/jvm/java-25-openjdk
+    JAVA_HOME: /usr/lib/jvm/java-21-openjdk
 
 pipeline:
   - uses: git-checkout
     with:
       repository: https://github.com/keycloak/keycloak
       tag: ${{package.version}}
-      expected-commit: 0526b94f0ddf166a210e39fd69d897ab4bb14431
+      expected-commit: 5bebfac09dd9abc5fe8b43f00ac596f0a5c998d1
 
-  # - uses: patch
-  #   with:
-  #     patches: pom.patch
+  - uses: patch
+    with:
+      patches: pom.patch
 
   - uses: maven/pombump
 
@@ -79,7 +79,7 @@ subpackages:
         - libaio
         - merged-usrsbin
         - net-tools
-        - openjdk-25-default-jdk
+        - openjdk-21-default-jdk
         - posix-libc-utils
         - procps
         - su-exec
@@ -90,7 +90,7 @@ subpackages:
       - uses: bitnami/compat
         with:
           image: keycloak
-          commit: 4a8bdf52699e3e5a0b2991648dc07670e7029d61
+          commit: 9026c37918f127913d1f27893c2b05db40a062fb
           version-path: ${{vars.major-version}}/debian-12
       - runs: |
           mkdir -p ${{targets.contextdir}}/bitnami/keycloak
@@ -107,10 +107,10 @@ subpackages:
           sed -i 's/hostname --fqdn/hostname -f/g' ${{targets.contextdir}}/opt/bitnami/scripts/keycloak-env.sh
 
           # Fix the JAVA_HOME Path in the script
-          sed -i 's/JAVA_HOME="\/opt\/bitnami\/java"/JAVA_HOME="\/usr\/lib\/jvm\/java-25-openjdk"/g' ${{targets.contextdir}}/opt/bitnami/scripts/keycloak-env.sh
+          sed -i 's/JAVA_HOME="\/opt\/bitnami\/java"/JAVA_HOME="\/usr\/lib\/jvm\/java-21-openjdk"/g' ${{targets.contextdir}}/opt/bitnami/scripts/keycloak-env.sh
 
           # Change the path for java security folder in the script
-          sed -i 's/\/opt\/bitnami\/java\/lib\/security/\/usr\/lib\/jvm\/java-25-openjdk\/conf\/security/g' ${{targets.contextdir}}/opt/bitnami/scripts/java/postunpack.sh
+          sed -i 's/\/opt\/bitnami\/java\/lib\/security/\/usr\/lib\/jvm\/java-21-openjdk\/conf\/security/g' ${{targets.contextdir}}/opt/bitnami/scripts/java/postunpack.sh
 
           # The `--userspec`` flag belongs to GNU's chroot, whereas we are use BusyBox's. As a workaround, use `su-exec` instead.
           sed -i 's|exec chroot --userspec="$userspec" /|exec chroot / su-exec "$userspec"|' ${{targets.contextdir}}/opt/bitnami/scripts/libos.sh
