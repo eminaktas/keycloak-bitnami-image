@@ -1,20 +1,20 @@
 diff --git a/pom.xml b/pom.xml
-index 83b294282c..f7be0d1338 100644
+index 1849554b63..2f7f5bfd1e 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -311,6 +311,31 @@
      <dependencyManagement>
-
+ 
          <dependencies>
 +            <dependency>
 +                <groupId>io.vertx</groupId>
 +                <artifactId>vertx-core</artifactId>
-+                <version>4.5.24</version>
++                <version>4.5.27</version>
 +            </dependency>
 +            <dependency>
-+                <groupId>com.fasterxml.jackson.core</groupId>
-+                <artifactId>jackson-core</artifactId>
-+                <version>2.21.1</version>
++                <groupId>io.quarkus</groupId>
++                <artifactId>quarkus-vertx-http</artifactId>
++                <version>3.27.4</version>
 +            </dependency>
 +            <dependency>
 +                <groupId>org.bouncycastle</groupId>
