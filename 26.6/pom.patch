@@ -1,25 +1,17 @@
 diff --git a/pom.xml b/pom.xml
-index 01c1d1445f..f9fce8091f 100644
+index 7ce546a3c7..febc70909f 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -319,6 +319,21 @@
+@@ -318,7 +318,12 @@
+
      <dependencyManagement>
 
-         <dependencies>
+-        <dependencies>
++      <dependencies>
 +            <dependency>
-+                <groupId>org.bouncycastle</groupId>
-+                <artifactId>bcpkix-jdk18on</artifactId>
-+                <version>1.84</version>
-+            </dependency>
-+            <dependency>
-+                <groupId>org.bouncycastle</groupId>
-+                <artifactId>bcprov-jdk18on</artifactId>
-+                <version>1.84</version>
-+            </dependency>
-+            <dependency>
-+                <groupId>org.bouncycastle</groupId>
-+                <artifactId>bcutil-jdk18on</artifactId>
-+                <version>1.84</version>
++                <groupId>io.vertx</groupId>
++                <artifactId>vertx-core</artifactId>
++                <version>4.5.28</version>
 +            </dependency>
              <dependency>
                  <groupId>org.infinispan</groupId>
