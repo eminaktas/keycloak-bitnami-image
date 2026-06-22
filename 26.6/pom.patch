@@ -1,17 +1,15 @@
 diff --git a/pom.xml b/pom.xml
-index 7ce546a3c7..febc70909f 100644
+index 4f16d38bd7..2569308f91 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -318,7 +318,12 @@
-
+@@ -320,6 +320,11 @@
      <dependencyManagement>
-
--        <dependencies>
-+      <dependencies>
+ 
+         <dependencies>
 +            <dependency>
-+                <groupId>io.vertx</groupId>
-+                <artifactId>vertx-core</artifactId>
-+                <version>4.5.28</version>
++                <groupId>com.fasterxml.jackson.core</groupId>
++                <artifactId>jackson-databind</artifactId>
++                <version>2.21.4</version>
 +            </dependency>
              <dependency>
                  <groupId>org.infinispan</groupId>
