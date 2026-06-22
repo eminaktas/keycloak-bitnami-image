@@ -1,19 +1,31 @@
 patches:
   - groupId: io.netty
     artifactId: netty-codec
-    version: 4.1.134.Final
+    version: 4.1.135.Final
   - groupId: io.netty
     artifactId: netty-codec-http2
-    version: 4.1.134.Final
+    version: 4.1.135.Final
   - groupId: io.netty
     artifactId: netty-codec-http
-    version: 4.1.134.Final
+    version: 4.1.135.Final
   - groupId: io.netty
     artifactId: netty-codec-dns
-    version: 4.1.134.Final
+    version: 4.1.135.Final
   - groupId: io.netty
     artifactId: netty-handler-proxy
-    version: 4.1.134.Final
+    version: 4.1.135.Final
+  - groupId: io.netty
+    artifactId: netty-codec-haproxy
+    version: 4.1.135.Final
+  - groupId: io.netty
+    artifactId: netty-handler
+    version: 4.1.135.Final
+  - groupId: io.netty
+    artifactId: netty-resolver-dns
+    version: 4.1.135.Final
+  - groupId: io.netty
+    artifactId: netty-transport-native-epoll
+    version: 4.1.135.Final
   - groupId: org.postgresql
     artifactId: postgresql
     version: 42.7.11

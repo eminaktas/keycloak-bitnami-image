@@ -1,11 +1,16 @@
 diff --git a/pom.xml b/pom.xml
-index 1849554b63..2f7f5bfd1e 100644
+index 1849554b63..49504e3a2a 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -311,6 +311,31 @@
+@@ -311,6 +311,36 @@
      <dependencyManagement>
  
          <dependencies>
++            <dependency>
++                <groupId>com.fasterxml.jackson.core</groupId>
++                <artifactId>jackson-databind</artifactId>
++                <version>2.18.8</version>
++            </dependency>
 +            <dependency>
 +                <groupId>io.vertx</groupId>
 +                <artifactId>vertx-core</artifactId>
