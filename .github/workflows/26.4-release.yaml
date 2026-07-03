@@ -22,5 +22,6 @@ jobs:
       - uses: ./.github/actions/release
         env:
           MELANGE_PRIVATE_KEY: ${{ secrets.MELANGE_PRIVATE_KEY }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
         with:
           tag: "26.4"
