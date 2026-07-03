@@ -90,9 +90,16 @@ runs:
 
     - uses: sigstore/cosign-installer@main
 
+    - name: Log in to ghcr.io for cosign
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+
     - shell: bash
       run: |
-        cosign sign --yes ${{ steps.apko.outputs.digest }}
+        cosign sign --yes ${{ steps.apko.outputs.digest }} --key melange.rsa
 
     - name: Smoke test
       shell: bash
