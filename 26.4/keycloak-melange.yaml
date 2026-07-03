@@ -39,7 +39,9 @@ environment:
       - busybox
       - ca-certificates-bundle
       - gcc-13-default
+      - nodejs
       - openjdk-21-default-jdk
+      - pnpm
       - wolfi-base
       - wolfi-baselayout
   environment:
@@ -60,15 +62,7 @@ pipeline:
   # - uses: maven/pombump
 
   - runs: |
-      gcc napi-static-assert.c -o /tmp/preload.so -fPIC -shared -ldl
-
-  - runs: |
-      # Build keycloak-server. Depends on `keycloak-js-adapter-jar`.
-      # Gross hack to work around broken NAPI ast-grep module that has
-      # undefined symbol: static_assert
-      export LD_PRELOAD=/tmp/preload.so
       ./mvnw clean install --errors -DskipTests -DskipTestsuite -DskipExamples -q -DskipProtoLock=true
-      unset LD_PRELOAD
 
       mkdir -p ${{targets.destdir}}/opt/bitnami
       unzip -d ${{targets.destdir}}/opt/bitnami quarkus/dist/target/keycloak-*.zip

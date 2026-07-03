@@ -35,11 +35,11 @@ runs:
     - uses: chainguard-dev/actions/melange-build@main
       with:
         archs: ${{ inputs.archs }}
-        multi-config: keycloak-melange.yaml,keycloak-metrics-spi-melange.yaml
-        sign-with-own-key: true
-        signing-key-path: melange.rsa
+        config: keycloak-melange.yaml
         repository-path: /work/packages
         pipeline-dir: pipelines
+        sign-with-own-key: true
+        signing-key-path: melange.rsa
 
     - name: Create temp copy of /work directory (used in next step)
       shell: bash
@@ -78,16 +78,21 @@ runs:
       shell: bash
 
     - uses: chainguard-images/actions/apko-publish@main
+      id: apko
       with:
         archs: ${{ inputs.archs }}
         config: apko.yaml
         tag: ${{ steps.image.outputs.IMAGE }}
-        keyring-append: melange.rsa.pub
         automount-src: .apko-automount/.
         automount-dest: /work
         source-date-epoch: ${{ steps.snapshot-date.outputs.epoch }}
+        keyring-append: melange.rsa.pub
 
-    # - uses: sigstore/cosign-installer@main
+    - uses: sigstore/cosign-installer@main
+
+    - shell: bash
+      run: |
+        cosign sign --yes ${{ steps.apko.outputs.digest }}
 
     - name: Smoke test
       shell: bash
@@ -100,7 +105,7 @@ runs:
 
         docker pull "${ref}"
 
-        # cosign verify "${ref}" --key melange.rsa.pub
+        cosign verify "${ref}" --key melange.rsa.pub
 
         docker run -d --rm -p 9000:9000 -p 8080:8080 \
           -e KEYCLOAK_DATABASE_VENDOR=dev-mem \
@@ -112,4 +117,3 @@ runs:
         sleep 30 # Give server a few seconds to come up
 
         curl -v --max-time 10 --fail http://localhost:9000/health
-        curl -v --max-time 10 --fail http://localhost:8080/realms/master/metrics

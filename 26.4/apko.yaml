@@ -8,7 +8,6 @@ contents:
     - busybox
     - keycloak-bitnami@local
     - keycloak-bitnami-compat@local
-    - keycloak-metrics-spi-bitnami@local
 
 accounts:
   groups:

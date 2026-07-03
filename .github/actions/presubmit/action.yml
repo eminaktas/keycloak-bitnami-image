@@ -25,7 +25,7 @@ runs:
     - uses: chainguard-dev/actions/melange-build@main
       with:
         archs: ${{ inputs.archs }}
-        multi-config: keycloak-melange.yaml,keycloak-metrics-spi-melange.yaml
+        config: keycloak-melange.yaml
         repository-path: /work/packages
         pipeline-dir: pipelines
         sign-with-temporary-key: true
@@ -50,13 +50,13 @@ runs:
 
     - uses: chainguard-images/actions/apko-build@main
       with:
+        archs: ${{ inputs.archs }}
         config: apko.yaml
         tag: ${{ steps.image.outputs.IMAGE }}
-        keyring-append: /work/melange.rsa.pub
-        archs: ${{ inputs.archs }}
         automount-src: .apko-automount/.
         automount-dest: /work
         source-date-epoch: ${{ steps.snapshot-date.outputs.epoch }}
+        keyring-append: /work/melange.rsa.pub
 
     - name: Load image from apko-produced tarball
       shell: bash
@@ -78,7 +78,6 @@ runs:
         sleep 30 # Give server a few seconds to come up
 
         curl -v --max-time 10 --fail http://localhost:9000/health
-        curl -v --max-time 10 --fail http://localhost:8080/realms/master/metrics
 
     - name: Scan image
       uses: anchore/scan-action@v7
