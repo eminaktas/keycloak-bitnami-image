@@ -2,7 +2,7 @@ name: "26.6-presubmit"
 on:
   pull_request:
     paths:
-      - .github/actions/presubmit/action-v2.yml
+      - .github/actions/presubmit/action.yml
       - .github/workflows/26.6-presubmit.yml
       - pipelines/bitnami/compat.yaml
       - 26.6/**
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/presubmit-v2
+      - uses: ./.github/actions/presubmit
         env:
           MELANGE_PRIVATE_KEY: ${{ secrets.MELANGE_PRIVATE_KEY }}
         with:
