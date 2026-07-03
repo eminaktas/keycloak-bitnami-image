@@ -1,4 +1,5 @@
 *.rsa
+*.key
 packages/
 *.tar
 sbom*

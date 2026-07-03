@@ -20,17 +20,19 @@ runs:
       shell: bash
       run: |
         shopt -s dotglob && tmp="$(mktemp -d)" && \
-          mv melange.rsa.pub pipelines ${{ inputs.tag }}/* ${tmp}/ && \
+          mv melange.rsa.pub cosign.pub pipelines ${{ inputs.tag }}/* ${tmp}/ && \
           mv .github ${tmp}/ && \
           rm -rf ./* && mv ${tmp}/* . && \
           echo ".github/" >> .melangeignore && tree -a . && \
           sudo rm -rf /work && sudo mkdir /work
 
-    - name: Write melange key
+    - name: Write melange and cosign key
       shell: bash
       run: |
         printf '%s' "$MELANGE_PRIVATE_KEY" > melange.rsa
         chmod 0600 melange.rsa
+        printf '%s' "$COSIGN_PRIVATE_KEY" > cosign.key
+        chmod 0600 cosign.key
 
     - uses: chainguard-dev/actions/melange-build@main
       with:
@@ -98,8 +100,10 @@ runs:
         password: ${{ github.token }}
 
     - shell: bash
+      env:
+        COSIGN_PASSWORD: ""
       run: |
-        cosign sign --yes ${{ steps.apko.outputs.digest }} --key melange.rsa
+        cosign sign --yes --key cosign.key ${{ steps.apko.outputs.digest }}
 
     - name: Smoke test
       shell: bash
@@ -112,7 +116,7 @@ runs:
 
         docker pull "${ref}"
 
-        cosign verify "${ref}" --key melange.rsa.pub
+        cosign verify "${ref}" --key cosign.pub
 
         docker run -d --rm -p 9000:9000 -p 8080:8080 \
           -e KEYCLOAK_DATABASE_VENDOR=dev-mem \
