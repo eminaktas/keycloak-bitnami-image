@@ -1,11 +1,11 @@
-name: 26.6-presubmit
+name: 26.7-presubmit
 on:
   pull_request:
     paths:
       - .github/actions/presubmit/action.yml
-      - .github/workflows/26.6-presubmit.yml
+      - .github/workflows/26.7-presubmit.yml
       - pipelines/bitnami/compat.yaml
-      - 26.6/**
+      - 26.7/**
 permissions:
   contents: read
   pull-requests: write
@@ -19,4 +19,4 @@ jobs:
         env:
           MELANGE_PRIVATE_KEY: ${{ secrets.MELANGE_PRIVATE_KEY }}
         with:
-          tag: "26.6"
+          tag: "26.7"

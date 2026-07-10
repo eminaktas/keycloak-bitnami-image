@@ -1,4 +1,4 @@
-name: "26.4-presubmit"
+name: 26.4-presubmit
 on:
   pull_request:
     paths:

@@ -1,4 +1,4 @@
-name: "26.4-release"
+name: 26.4-release
 on:
   push:
     branches:
