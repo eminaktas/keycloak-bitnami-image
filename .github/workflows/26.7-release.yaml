@@ -1,13 +1,13 @@
-name: 26.6-release
+name: 26.7-release
 on:
   push:
     branches:
       - main
     paths:
       - .github/actions/release/action.yml
-      - .github/workflows/26.6-release.yml
+      - .github/workflows/26.7-release.yml
       - pipelines/bitnami/compat.yaml
-      - 26.6/**
+      - 26.7/**
   workflow_dispatch:
 jobs:
   build:
@@ -24,4 +24,10 @@ jobs:
           MELANGE_PRIVATE_KEY: ${{ secrets.MELANGE_PRIVATE_KEY }}
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
         with:
-          tag: "26.6"
+          tag: "26.7"
+          extraTags: "latest"
+      - uses: actions/delete-package-versions@v5
+        with: 
+          package-name: 'keycloak-bitnami-image'
+          package-type: 'container'
+          min-versions-to-keep: 20
