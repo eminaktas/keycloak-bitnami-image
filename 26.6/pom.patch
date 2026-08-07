@@ -1,15 +1,25 @@
 diff --git a/pom.xml b/pom.xml
-index 4f16d38bd7..2569308f91 100644
+index e81939f0c6..84935d1e15 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -320,6 +320,11 @@
+@@ -321,6 +321,21 @@
      <dependencyManagement>
  
          <dependencies>
 +            <dependency>
 +                <groupId>com.fasterxml.jackson.core</groupId>
++                <artifactId>jackson-core</artifactId>
++                <version>2.21.5</version>
++            </dependency>
++            <dependency>
++                <groupId>com.fasterxml.jackson.core</groupId>
 +                <artifactId>jackson-databind</artifactId>
 +                <version>2.21.5</version>
++            </dependency>
++            <dependency>
++                <groupId>io.micrometer</groupId>
++                <artifactId>micrometer-core</artifactId>
++                <version>1.16.6</version>
 +            </dependency>
              <dependency>
                  <groupId>org.infinispan</groupId>
