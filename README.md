@@ -1,10 +1,15 @@
 # Keycloak Bitnami Image
 
+> [!IMPORTANT]
+> **Looking for images compatible with the official Keycloak distribution?**
+>
+> Visit [`eminaktas/keycloak-images`](https://github.com/eminaktas/keycloak-images) for container images built for both Keycloak Server and Keycloak Operator deployments. This repository remains focused on Bitnami's Keycloak Helm chart.
+
 This project aims to build a secure and up-to-date container image for Bitnami's Keycloak Chart, leveraging the Apko and Melange projects to create an image free from Common Vulnerabilities and Exposures (CVEs).
 
 | Image Tag               | Keycloak Version  | Description                                 |
 |------------------------ |-------------------|---------------------------------------------|
-| **latest, latest-26.7** | **26.7.2**        | Latest stable release of Keycloak           |
+| **latest, latest-26.7** | **26.7.3**        | Latest stable release of Keycloak           |
 | latest-26.6             | 26.6.6            | Latest release within Keycloak version 26.6 |
 | latest-26.4             | 26.4.15           | Latest release within Keycloak version 26.4 |
 
