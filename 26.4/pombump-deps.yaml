@@ -5,3 +5,6 @@ patches:
   - groupId: io.netty
     artifactId: netty-handler
     version: 4.1.137.Final
+  - groupId: org.mariadb.jdbc
+    artifactId: mariadb-java-client
+    version: 3.5.10
